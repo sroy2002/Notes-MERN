@@ -1,0 +1,100 @@
+@import "variables";
+@import '_mixin';
+@mixin flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+  background-color: rgb(255, 255, 255);
+  padding: none;
+  width: 30rem;
+  border-radius: 5rem;
+  @include flex;
+  &:hover {
+    border: 0.1rem solid #dfd7bf;
+    border-radius: 5rem;
+  }
+  input {
+    width: 100%;
+    font-size: 0.9rem;
+    background-color: transparent;
+    padding: 5px 1.5rem;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+  }
+  div{
+    @include flex;
+   
+    padding: 0.6rem;
+   
+  }
+  .search-icon{
+    box-sizing: border-box;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: $primary-color;
+    margin-right: 0.5rem;
+    &:hover{
+        color: rgb(0, 0, 0);
+    }
+
+  }
+
+}
+
+@include respond-to(mobile){
+  .container{
+    width: 10rem;
+    margin: 0.5rem;
+    input{
+      font-size: 0.7rem;
+      padding: 2px 0.8rem 0rem;
+    }
+    div{
+      padding-left:  0.1rem;
+      padding-right: 0.4rem;
+    }
+    .search-icon{
+      font-size: 0.8rem;
+      margin: 0.27rem;
+    }
+  }
+}
+@include respond-to(tabSmall){
+  .container{
+    width: 20rem;
+    margin: 0.5rem;
+    input{
+      font-size: 0.7rem;
+      padding: 2px 0.8rem 0rem;
+    }
+    div{
+      padding-left:  0.1rem;
+      padding-right: 0.4rem;
+    }
+    .search-icon{
+      font-size: 0.8rem;
+      margin: 0.27rem;
+    }
+  }
+}
+@include respond-to(tab){
+  .container{
+    width: 20rem;
+    margin: 0.5rem;
+    input{
+      font-size: 0.85rem;
+      padding: 2px 0.8rem 0rem;
+    }
+    div{
+      padding-left:  0.1rem;
+      // padding-right: 0.4rem;
+    }
+    .search-icon{
+      font-size: 0.8rem;
+      margin: 0.27rem;
+    }
+  }
+}

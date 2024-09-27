@@ -1,0 +1,180 @@
+@import "variables";
+@import "_mixin";
+@mixin flex($dir, $align, $justify) {
+  display: flex;
+  flex-direction: $dir;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+.card {
+  .parent {
+    @include flex(column, center, space-around);
+    background-color: #fdfcf6;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: rgba(69, 69, 69, 0.16) 0px 1px 4px;
+    &:hover {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+      transform: scale(1.01);
+    }
+    .card-heading {
+      @include flex(column, start, center);
+
+      p {
+        font-size: 1rem;
+        margin: 0rem;
+      }
+      span {
+        font-size: 0.7rem;
+        color: #707070;
+      }
+    }
+    .upper {
+      @include flex(row, center, space-between);
+      width: 100%;
+      .pin-icon {
+        font-size: 1.3rem;
+        cursor: pointer;
+        &:hover {
+          color: black;
+        }
+        &.pinned {
+          color: blue;
+        }
+        &.not-pinned {
+          color: rgb(180, 180, 180);
+        }
+      }
+    }
+  }
+}
+
+.card-content {
+  font-size: 0.75rem;
+}
+.bottom {
+  @include flex(row, center, space-between);
+  width: 100%;
+  p {
+    font-size: 0.75rem;
+    color: rgb(108, 107, 107);
+  }
+  div {
+    @include flex(row, center, space-between);
+    font-size: 1.3rem;
+  }
+  .icon {
+    margin: auto 0.5rem;
+    cursor: pointer;
+    color: #c3c3c4;
+    &.icon1 {
+      &:hover {
+        color: #62ce41;
+      }
+    }
+    &.icon2 {
+      &:hover {
+        color: #ff1313;
+      }
+    }
+  }
+}
+
+@include respond-to(mobile) {
+  .card {
+    .parent {
+
+      padding: 1rem;
+      .card-heading {
+        p {
+          font-size: 0.8rem;
+        }
+        span {
+          font-size: 0.5rem;
+          color: #707070;
+        }
+      }
+      .upper {
+        .pin-icon {
+          font-size: 0.9rem;
+          cursor: pointer;
+          &:hover {
+            color: black;
+          }
+          &.pinned {
+            color: blue;
+          }
+          &.not-pinned {
+            color: rgb(180, 180, 180);
+          }
+        }
+      }
+      .card-content {
+        font-size: 0.6rem;
+      }
+      .bottom {
+        p {
+          font-size: 0.6rem;
+        }
+        div {
+          font-size: 1rem;
+        }
+        .icon {
+          margin: auto 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+@include respond-to(tab) {
+  .card {
+    height: auto;
+    justify-self: stretch;
+    align-self: center;
+    .parent {
+      padding: 1rem;
+      .card-heading {
+        p {
+          font-size: 0.85rem;
+        }
+        span {
+          font-size: 0.55rem;
+          color: #707070;
+        }
+      }
+      .upper {
+        .pin-icon {
+          font-size: 0.9rem;
+          cursor: pointer;
+          &:hover {
+            color: black;
+          }
+          &.pinned {
+            color: blue;
+          }
+          &.not-pinned {
+            color: rgb(180, 180, 180);
+          }
+        }
+      }
+      .card-content {
+        font-size: 0.68rem;
+      }
+      .bottom {
+        p {
+          font-size: 0.6rem;
+        }
+        div {
+          font-size: 1rem;
+        }
+        .icon {
+          margin: auto 0.5rem;
+        }
+      }
+    }
+  }
+}
