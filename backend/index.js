@@ -30,51 +30,64 @@ app.use(
 app.get("/",(req,res)=>{
     res.json({data:"hello"});
 });
-
+//fetch notes for the autheticated user
+app.get("/notes",checkJwt,async(req,res)=>{
+    try{
+        const user = req.auth.payload; // get the authenticated user's info
+        const notes = await Note.find({userId:user.sub});//Fetch notes for this user
+        res.json({notes});
+    }
+    catch(error){
+        res.status(500).json({
+            error:true,
+            message:"Failed to fetch notes",
+        });
+    }
+});
 //add note api
-// app.post("/add-note",checkJwt, async (req,res)=>{
-//     const {title,content,tags} = req.body;
-//     const {user} = req.user;
+app.post("/add-note",checkJwt, async (req,res)=>{
+    const {title,content,tags} = req.body;
+    const {user} = req.auth.payload;
 
-//     if(!title){
-//         return res
-//         .status(400)
-//         .json({
-//             error: true,
-//             message: "Title is required!"
-//         });
-//     }
-//     if(!content){
-//         return res
-//         .status(400)
-//         .json({
-//             error: true,
-//             message: "Content is required!"
-//         });
-//     }
-//     try{
-//         const note = new Note({
-//             title,
-//             content,
-//             tags: tags || [],
-//             userId: user._id,
-//         });
-//         await note.save();
-//         return res.json(
-//             {
-//                 error:false,
-//                 note,
-//                 message: "Note added successfully",
-//             }
-//         );
-//     }
-//     catch(error){
-//         return res.status(500).json({
-//             error: true,
-//             message: "Internal Server Error",
-//         });
-//     }
-// })
+    if(!title){
+        return res
+        .status(400)
+        .json({
+            error: true,
+            message: "Title is required!"
+        });
+    }
+    if(!content){
+        return res
+        .status(400)
+        .json({
+            error: true,
+            message: "Content is required!"
+        });
+    }
+    try{
+        const newNote = new Note({
+            title,
+            content,
+            tags: tags || [],
+            userId: user.sub, //save note with user's id
+        });
+        await newNote.save();
+        return res.status(201).json(
+            {
+                error:false,
+                newNote,
+                message: "Note added successfully",
+            }
+        );
+    }
+    catch(error){
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
+})
 
 app.listen(8000);
 module.exports = app;
