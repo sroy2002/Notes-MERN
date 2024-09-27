@@ -1,0 +1,135 @@
+@import "variables";
+@import "_mixin";
+
+.tag-parent {
+  margin-bottom: 0.2rem;
+  box-sizing: border-box;
+  .show-tag {
+    display: flex;
+   
+    align-items: center;
+    flex-wrap: wrap;
+    gap:0.3rem;
+    span {
+      background-color: #f9f6ef;
+      border-radius: 2rem;
+      padding:0.45rem 0.65rem;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      p{
+        font-size: 0.68rem;
+        margin: 0rem;
+        padding: 0rem;
+      }
+    }
+    .close {
+      display: flex;
+      align-items: center;
+      font-size: 0.68rem;
+      padding: 0.12rem;
+      border-radius: 0.3rem;
+      margin: auto 0rem auto 0.2rem;
+      color: $primary-color;
+      background-color: transparent;
+      &:hover {
+        background-color: $primary-color2;
+        color: white;
+      }
+    }
+  }
+  .input-tag {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.7rem;
+    input {
+      margin: 0rem;
+      outline: none;
+      width:8rem;
+      border: #ebe6e6 solid 2px;
+      padding: 0.5rem 0.7rem;
+      border-radius: 0.5rem;
+    }
+    .tag-btn {
+      margin: 0rem;
+      padding: 0.55rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+@include respond-to(mobile) {
+  .tag-parent {
+    box-sizing: border-box;
+    .show-tag{
+        font-size: 0.38rem;
+        span{
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+        }
+        .close {
+            font-size: 0.5rem;
+            
+            border-radius: 0.3rem;
+            margin: 0.3rem;
+          }
+    }
+    .input-tag {
+      box-sizing: border-box;
+      gap: 0.4rem;
+      input {
+        margin: 0rem;
+        outline: none;
+   
+        border: #ebe6e6 solid 2px;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.5rem;
+      }
+      .tag-btn {
+        margin: 0rem;
+        padding: 0.4rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+@include respond-to(tabSmall) {
+  .tag-parent {
+    box-sizing: border-box;
+    .show-tag{
+        font-size: 0.38rem;
+        span{
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+        }
+        .close {
+            font-size: 0.5rem;
+            
+            border-radius: 0.3rem;
+            margin: 0.3rem;
+          }
+    }
+    .input-tag {
+      box-sizing: border-box;
+      gap: 0.4rem;
+      input {
+        margin: 0rem;
+        outline: none;
+        border: #ebe6e6 solid 2px;
+        padding: 0.45rem;
+        border-radius: 0.5rem;
+        font-size: 0.7rem;
+      }
+      .tag-btn {
+        margin: 0rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
+    }
+  }
+}

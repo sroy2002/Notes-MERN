@@ -1,0 +1,68 @@
+@import "_mixin";
+@import "variables";
+//base styles
+.panel-parent {
+  width: 100%;
+  min-height: 100%;
+  background-color: rgb(228, 216, 194);
+  box-shadow: 6px 5px 21px -3px rgba(0, 0, 0, 0.05);
+  padding: 0.1rem;
+  &.open {
+    display: inline-block;
+    opacity: 100;
+    transform: translateX(0rem);
+  }
+  &.close {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+.user-profile{
+  .notice{
+    font-size: 0.7rem;
+    padding: 1rem;
+  }
+}
+.panel-user-pic {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  img {
+    width: 3.2rem;
+    height: 3.2rem;
+    margin: 0.9rem 0rem 0.7rem 0rem;
+    border-radius: 50%;
+  }
+  p {
+    font-size: 0.65rem;
+    margin: 0rem;
+  }
+}
+@include respond-to(mobile) {
+  .panel-parent {
+    .user-profile {
+      .panel-user-pic {
+        display: flex;
+      }
+    }
+  }
+}
+@include respond-to(tabSmall) {
+  .panel-parent {
+    .user-profile {
+      .panel-user-pic {
+        display: flex;
+      }
+    }
+  }
+}
+@include respond-to(tab) {
+  .panel-parent {
+    .user-profile {
+      .panel-user-pic {
+        display: flex;
+      }
+    }
+  }
+}

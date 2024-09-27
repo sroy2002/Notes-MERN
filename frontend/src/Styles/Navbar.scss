@@ -1,0 +1,178 @@
+@import "variables";
+@import '_mixin';
+@mixin flex($par1){
+    display: flex;
+    justify-content: $par1;
+    align-items: center;
+}
+//base styles
+.parent {
+  @include flex(space-between);
+  filter: $shadow;
+  padding: 0.1rem 1rem;
+  background-color: whitesmoke;
+  overflow: hidden;
+  .app-icon{
+    width: 2.2rem;
+    height: 2.2rem;
+    margin: auto 0.5rem;
+  }
+  .branding{
+    font-size: 1.2rem;
+    color:$primary-color;
+    @include flex(center);
+    .menu-icon{
+      cursor: pointer;
+    }
+
+  }
+  button {
+    padding: 0.6rem 1rem;
+    border: 0rem;
+    background-color: $primary-color;
+    color: white;
+    font-size: 0.85rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    &:hover {
+      background-color: $primary-color2;
+      filter: $shadow;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.user{
+    @include flex(center);
+    div{
+        @include flex(center);
+        margin-right: 0.8rem;
+    }
+    img{
+        width: 2.6rem;
+        height: 2.6rem;
+        border-radius: 50%;
+        cursor: pointer;
+        
+    }
+    .mode{
+        padding: 0.5rem;
+        font-size: 1.5rem;
+        border-radius: 2rem;
+        color: $primary-color;
+        cursor: pointer;
+        transition: transform 0.5s ease;
+        &:hover{
+            background-color: #F1E4C3;
+        }
+    }
+    .rotate{
+        transform: rotate(180deg);
+    }
+}
+
+@include respond-to(mobile){
+  .parent{
+    width: 100%;
+    box-sizing: border-box;
+    .branding{
+      font-size: 0.8rem;
+    }
+    .brand-name{
+      display: none;
+    }
+    .app-icon{
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .user{
+      button{
+        padding: 0.4rem 0.8rem;
+        font-size: 0.5rem;
+      }
+      .user-pic{
+        display: none;
+      }
+      .mode{
+        padding:0.3rem;
+        font-size: 1.2rem;
+      }
+    }
+  }
+  
+}
+@include respond-to(tab){
+  .parent{
+    width: 100%;
+    box-sizing: border-box;
+    .branding{
+      font-size: 1.2rem;
+    }
+    .brand-name{
+      display: block;
+    }
+    .app-icon{
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .user{
+      button{
+        padding: 0.7rem 0.9rem;
+        font-size: 0.8rem;
+      }
+      .user-pic{
+        display: none;
+      }
+      .mode{
+        padding:0.3rem;
+        font-size: 1.7rem;
+      }
+    }
+  }
+  
+}
+@include respond-to (tabSmall) {
+  .parent{
+    width: 100%;
+    box-sizing: border-box;
+    .branding{
+      font-size: 0.9rem;
+    }
+    .brand-name{
+      display: none;
+    }
+    .app-icon{
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .user{
+      button{
+        padding: 0.2rem 1rem;
+        font-size: 0.55rem;
+      }
+      .user-pic{
+        display: none;
+      }
+      .mode{
+        padding:0.3rem;
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+@include respond-to(laptop){
+  .parent{
+    .menu-icon{
+      display: none;
+    }
+  }
+}
+@include respond-to(desktop){
+  .parent{
+    .menu-icon{
+      display: none;
+    }
+  }
+}
