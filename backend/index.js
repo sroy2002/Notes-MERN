@@ -89,5 +89,10 @@ app.post("/add-note",checkJwt, async (req,res)=>{
     }
 })
 
+//edit notes api
+app.put("/edit-note",async(req,res)=>{
+    
+})
+
 app.listen(8000);
 module.exports = app;

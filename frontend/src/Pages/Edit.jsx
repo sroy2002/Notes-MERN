@@ -19,6 +19,7 @@ const Edit = ({ noteData, type, onClose }) => {
         title,
         content,
         tags,
+        date: new Date(),
         isPinned: false, // default to false
         userId: user.sub, // fetch user ID fromAuth0 user object
       };

@@ -5,9 +5,9 @@ import { MdCreate, MdDelete } from "react-icons/md";
 import "../Styles/Notecard.scss";
 const Notecard = ({
   title,
-  date,
   content,
   tags,
+  date,
   onEdit,
   onDelete
 }) => {
@@ -16,13 +16,20 @@ const Notecard = ({
   function onPinNote(){
     setIsPinned(!isPinned);
   }
+
+  const formattedDate = new Date(date).toLocaleDateString('en-GB',{
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+
   return (
     <div className="card">
       <div className="parent">
         <div className="upper">
           <div className="card-heading">
             <p className="poppins-semibold">{title}</p>
-            <span>{date}</span>
+            <span>{formattedDate}</span>
           </div>
           <div>
             {isPinned ? (
