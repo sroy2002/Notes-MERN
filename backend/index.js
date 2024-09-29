@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin:"*",
+        origin:"http://localhost:5173",
     })
 );
 
@@ -47,7 +47,7 @@ app.get("/notes",checkJwt,async(req,res)=>{
 //add note api
 app.post("/add-note",checkJwt, async (req,res)=>{
     const {title,content,tags} = req.body;
-    const {user} = req.auth.payload;
+    const user = req.auth.payload;
 
     if(!title){
         return res

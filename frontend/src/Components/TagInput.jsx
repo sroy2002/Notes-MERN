@@ -27,7 +27,7 @@ const TagInput = ({ tags, setTags }) => {
           {tags.map((tag, index) => {
             return (
               <span key={index}>
-                <p># {tag}</p>
+                <p className="tagNames"> # {tag}</p>
                 <button className="close" onClick={() => handleRemove(tag)}>
                   <IoMdClose />
                 </button>

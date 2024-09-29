@@ -72,9 +72,9 @@ const addNote = async (newNote) =>{
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
         </div>
+        <div className="sub-container">
         {notes.length ? (
           notes.map((note) => (
-            <div className="sub-container">
               <Notecard
               key={note._id}
               title={note.title}
@@ -83,22 +83,11 @@ const addNote = async (newNote) =>{
               tags={note.tags}
               // Add additional note properties
             />
-              {/* <Notecard
-            title="Meeting"
-            date="26th Aug 2024"
-            content="Having a meeting on 26th Aug dsjfgysefbchvjbxgreyuetgfchdxvuyertgfbcnxzburytgfgchxbzchhjedg"
-            tags="#meeting"
-            isPinned={true}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onPinNote={() => {}}
-            className="notecard"
-          /> */}
-            </div>
-          ))
-        ) : (
-          <p>No Notes to display</p>
-        )}
+        ))
+      ) : (
+        <p>No Notes to display</p>
+      )}
+      </div>
       </div>
       <div className="create">
         <button

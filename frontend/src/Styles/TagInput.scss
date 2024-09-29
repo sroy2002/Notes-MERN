@@ -6,7 +6,6 @@
   box-sizing: border-box;
   .show-tag {
     display: flex;
-   
     align-items: center;
     flex-wrap: wrap;
     gap:0.3rem;
@@ -17,7 +16,8 @@
       margin-bottom: 0.6rem;
       display: flex;
       align-items: center;
-      p{
+      .tagNames{
+        word-wrap: break-word;
         font-size: 0.68rem;
         margin: 0rem;
         padding: 0rem;
