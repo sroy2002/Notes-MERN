@@ -5,9 +5,9 @@ import "../Styles/Home.scss";
 import Navbar from "../Components/Navbar";
 import Notecard from "../Components/Notecard";
 import SidePannel from "../Components/SidePannel";
-import Edit from "./Edit";
 import axios from "../api";
 import { useAuth0 } from "@auth0/auth0-react";
+import Create from "../Components/Create";
 // import { locals } from "../../../backend";
 
 const Home = () => {
@@ -79,9 +79,8 @@ const addNote = async (newNote) =>{
               key={note._id}
               title={note.title}
               content={note.content}
-              date={note.date}
+              createdOn={note.createdOn}
               tags={note.tags}
-              // Add additional note properties
             />
         ))
       ) : (
@@ -109,7 +108,8 @@ const addNote = async (newNote) =>{
         contentLabel=""
         className="modal-styles"
       >
-        <Edit
+        <Create
+          fetchNotes = {fetchNotes}
           onClose={() => {
             setOpenModal({ isShown: false, type: "add", data: null });
           }}

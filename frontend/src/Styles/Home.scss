@@ -14,15 +14,16 @@ body {
 
 .sub-container {
   display: grid;
+  width:100%;
   box-sizing: border-box;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   margin: 2rem 2.5rem;
-  gap: 2rem;
+  gap: 1rem;
 }
 .wrapper {
   display: flex;
-  // justify-content: center;
-  // align-items: center;
+  //justify-content: center;
+  //align-items: center;
   box-sizing: border-box;
   width: 100%;
   .panel-div {

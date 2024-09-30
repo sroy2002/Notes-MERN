@@ -7,7 +7,7 @@ const Notecard = ({
   title,
   content,
   tags,
-  date,
+  createdOn,
   onEdit,
   onDelete
 }) => {
@@ -17,7 +17,7 @@ const Notecard = ({
     setIsPinned(!isPinned);
   }
 
-  const formattedDate = new Date(date).toLocaleDateString('en-GB',{
+  const formattedDate = new Date(createdOn).toLocaleDateString('en-GB',{
     day: 'numeric',
     month: 'short',
     year: 'numeric'

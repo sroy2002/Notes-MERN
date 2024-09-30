@@ -91,6 +91,9 @@ app.post("/add-note",checkJwt, async (req,res)=>{
 
 //edit notes api
 app.put("/edit-note",async(req,res)=>{
+    const noteId = req.params.noteId;
+    const {title, content, tags, isPinned} = req.body;
+    const {user} = req.user;
     
 })
 

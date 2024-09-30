@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import "../Styles/Edit.scss";
-import TagInput from "../Components/TagInput";
+import TagInput from "./TagInput";
 import { IoMdClose } from "react-icons/io";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const Edit = ({ noteData, type, onClose }) => {
+const Create = ({ noteData, type, onClose, fetchNotes}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
   const { user, getAccessTokenSilently } = useAuth0(); // get user info and token
-
+   console.log(noteData);
   // function to add new note
   const addNewNote = async () => {
     try {
@@ -41,6 +41,7 @@ const Edit = ({ noteData, type, onClose }) => {
         setError(null);
         alert("Note added successfully!");
         onClose();
+        fetchNotes();
       }
     } catch (error) {
       console.error("Error adding note: ", error);
@@ -142,4 +143,4 @@ const Edit = ({ noteData, type, onClose }) => {
   );
 };
 
-export default Edit;
+export default Create;
