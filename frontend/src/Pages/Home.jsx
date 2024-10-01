@@ -45,25 +45,41 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    fetchNotes();
-  }, [isAuthenticated]);
-
-const addNote = async (newNote) =>{
-  if(isAuthenticated){
-    const token = await getAccessTokenSilently();
-    await axios.post("/add-note",newNote,{
-      headers:{
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } else {
-    //save notes in local storage if user is not authenticated
-    const localNotes = JSON.parse(localStorage.getItem("notes")) || [];
-    localNotes.push(newNote);
-    localStorage.setItem("notes",JSON.stringify(localNotes));
+  const fetchGuestNotes = () =>{
+    const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+    setNotes(guestNotes);
   }
-};
+
+  useEffect(() => {
+    if(isAuthenticated){
+      fetchNotes();
+    }
+    else{
+      fetchGuestNotes();
+    }
+  }, []);
+
+
+  const updateNote = async (updatedNote) => {
+    if (isAuthenticated) {
+      const token = await getAccessTokenSilently();
+      await axios.put(`/notes/${updatedNote._id}`, updatedNote, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } else {
+      const localNotes = JSON.parse(localStorage.getItem("notes")) || [];
+      const noteIndex = localNotes.findIndex(
+        (note) => note._id === updatedNote._id
+      );
+      if (noteIndex !== -1) {
+        localNotes[noteIndex] = updatedNote;
+        localStorage.setItem("notes", JSON.stringify(localNotes));
+      }
+    }
+    fetchNotes(); // refresh notes after editing
+  };
 
   return (
     <div>
@@ -73,20 +89,28 @@ const addNote = async (newNote) =>{
           <SidePannel panelOpen={panel} />
         </div>
         <div className="sub-container">
-        {notes.length ? (
-          notes.map((note) => (
+          {notes.length ? (
+            notes.map((note) => (
               <Notecard
-              key={note._id}
-              title={note.title}
-              content={note.content}
-              createdOn={note.createdOn}
-              tags={note.tags}
-            />
-        ))
-      ) : (
-        <p>No Notes to display</p>
-      )}
-      </div>
+                key={note._id}
+                title={note.title}
+                content={note.content}
+                createdOn={note.createdOn}
+                tags={note.tags}
+                onEdit={()=>{
+                  if(isAuthenticated){
+                    setOpenModal({isShown: true, type:"edit",data:note})
+                  }
+                  else{
+                    alert("Login/Sign Up to edit your notes!");
+                  }
+                }}
+              />
+            ))
+          ) : (
+            <p>No Notes to display</p>
+          )}
+        </div>
       </div>
       <div className="create">
         <button
@@ -109,7 +133,11 @@ const addNote = async (newNote) =>{
         className="modal-styles"
       >
         <Create
-          fetchNotes = {fetchNotes}
+        fetchGuestNotes={fetchGuestNotes}
+          fetchNotes={fetchNotes}
+          data = {openModal.data}
+          type = {openModal.type}
+          onEdit={updateNote}
           onClose={() => {
             setOpenModal({ isShown: false, type: "add", data: null });
           }}

@@ -3,9 +3,7 @@ require("dotenv").config();
 const config = require("./config.json");
 const mongoose = require("mongoose");
 mongoose.connect(config.connectionString);
-
 const Note = require("./models/note.model");
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -89,13 +87,36 @@ app.post("/add-note",checkJwt, async (req,res)=>{
     }
 })
 
+
 //edit notes api
-app.put("/edit-note",async(req,res)=>{
-    const noteId = req.params.noteId;
-    const {title, content, tags, isPinned} = req.body;
-    const {user} = req.user;
+app.put("/edit-note/:id", checkJwt,async(req,res)=>{
+    const noteId = req.params.id;
+    // const {title, content, tags, isPinned} = req.body;
+    // const {user} = req.user;
+
+    const updatedNote = req.body;
+
+    try{
+        const note = await Note.findById(noteId);
+        if(!note){
+            return res.status(404).json({message: 'Note not found'});
+        }
+
+        //update the note fields with the new data
+
+        note.title = updatedNote.title;
+        note.content = updatedNote.content;
+        note.tags = updatedNote.tags || [];
+        note.createdOn = new Date(); //update the timestamp
+
+        //save the updated note back to the database
+        await note.save();
+        res.status(200).json({message:"Note updated successfully!",note});
+    } catch(error){
+        res.status(500).json({message: 'Error updating note', error});
+    }
     
-})
+});
 
 app.listen(8000);
 module.exports = app;

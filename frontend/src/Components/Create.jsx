@@ -1,16 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styles/Edit.scss";
 import TagInput from "./TagInput";
 import { IoMdClose } from "react-icons/io";
 import { useAuth0 } from "@auth0/auth0-react";
+// import { locals } from "../../../backend";
 
-const Create = ({ noteData, type, onClose, fetchNotes}) => {
+const Create = ({
+  fetchGuestNotes,
+  fetchNotes,
+  data,
+  type,
+  onEdit,
+  onClose,
+}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
-  const { user, getAccessTokenSilently } = useAuth0(); // get user info and token
-   console.log(noteData);
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // get user info and token
+
+  // Function to add a new note to localStorage (for unauthenticated users)
+
+  const addNoteToLocalStorage = () => {
+    const newNote = {
+      id: new Date().getTime(), //unique id for each note
+      title,
+      content,
+      tags,
+      createdOn: new Date(),
+      isPinned: false,
+    };
+
+    let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+    notes.push(newNote);
+    sessionStorage.setItem("guestNotes", JSON.stringify(notes));
+    alert("Note added to local storage!");
+    onClose();
+    fetchGuestNotes();
+  };
+
   // function to add new note
   const addNewNote = async () => {
     try {
@@ -49,6 +77,15 @@ const Create = ({ noteData, type, onClose, fetchNotes}) => {
     }
   };
 
+  // Populate form with existing note data in edit mode
+  useEffect(() => {
+    if (type === "edit" && data) {
+      setTitle(data.title);
+      setContent(data.content);
+      setTags(data.tags);
+    }
+  }, [type, data]);
+
   // function to edit note
   const editNote = async () => {
     try {
@@ -57,18 +94,21 @@ const Create = ({ noteData, type, onClose, fetchNotes}) => {
         title,
         content,
         tags,
-        isPinned: false, // Default to false or change as per your app's logic
+        isPinned: false, // Default to false
         userId: user.sub, // Fetch user ID from Auth0 user object
       };
-      const response = await fetch(`/edit-note/${noteData._id}`, {
-        // Pass the note ID in the URL
-        method: "PUT", // Use PUT or PATCH to update the note
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // Pass the token in the header
-        },
-        body: JSON.stringify(noteData), // Send the updated note data to the backend
-      });
+      const response = await fetch(
+        `http://localhost:8000/edit-note/${data._id}`,
+        {
+          // Pass the note ID in the URL
+          method: "PUT", // Use PUT or PATCH to update the note
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`, // Pass the token in the header
+          },
+          body: JSON.stringify(noteData), // Send the updated note data to the backend
+        }
+      );
       const result = await response.json();
 
       if (!response.ok) {
@@ -77,6 +117,7 @@ const Create = ({ noteData, type, onClose, fetchNotes}) => {
         setError(null);
         alert("Note updated successfully!");
         onClose(); // Close modal on successful update
+        fetchNotes();
       }
     } catch (error) {
       console.error("Error updating note:", error);
@@ -95,10 +136,19 @@ const Create = ({ noteData, type, onClose, fetchNotes}) => {
     }
 
     setError("");
-    if (type === "edit") {
-      editNote();
+    if (isAuthenticated) {
+      if (type === "edit") {
+        editNote();
+      } else {
+        addNewNote();
+      }
     } else {
-      addNewNote();
+      if(type==="edit"){
+        alert("Login/Sign Up to edit your notes!");
+      }
+      else{
+        addNoteToLocalStorage();
+      }
     }
   };
   return (
@@ -137,7 +187,7 @@ const Create = ({ noteData, type, onClose, fetchNotes}) => {
       </div>
       {error && <p className="error-text">{error}</p>}
       <button className="poppins-bold add-btn" onClick={handleAddNote}>
-        ADD
+        {type === "edit" ? "UPDATE" : "ADD"}
       </button>
     </div>
   );
