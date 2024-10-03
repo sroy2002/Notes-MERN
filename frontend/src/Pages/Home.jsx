@@ -59,7 +59,7 @@ const Home = () => {
     }
   }, []);
 
-
+// function to edit notes
   const updateNote = async (updatedNote) => {
     if (isAuthenticated) {
       const token = await getAccessTokenSilently();
@@ -80,6 +80,51 @@ const Home = () => {
     }
     fetchNotes(); // refresh notes after editing
   };
+
+// function to delete notes
+const deleteNote = async (noteId) =>{
+  try{
+    const accessToken = await getAccessTokenSilently();
+    const response = await fetch(`http://localhost:8000/delete-note/${noteId}`,{
+      method: "DELETE",
+      headers:{
+        Authorization: `Bearer ${accessToken}`,//pass the token in the header
+      },
+    });
+
+    if(!response.ok){
+      const result = await response.json();
+      alert("Failed to delete the note!");
+      console.log(result);
+    }
+    else{
+      alert("Note deleted successfully!");
+      fetchNotes();
+    }
+  }
+  catch(error){
+    alert("Note deletion failed!");
+    console.log("Error deleting note: ",error);
+  }
+};
+
+//Function to delete note from session storage for guest users
+const deleteNoteForGuests = (noteId) =>{
+  let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+  notes = notes.filter((note)=>note._id!==noteId); //use unique id for filtering
+  sessionStorage.setItem("guestNotes",JSON.stringify(notes));
+  alert("Note deleted!");
+  fetchGuestNotes();
+};
+
+const onDelete = (noteId) =>{
+  if(isAuthenticated){
+    deleteNote(noteId);
+  }
+  else{
+    deleteNoteForGuests(noteId);
+  }
+};
 
   return (
     <div>
@@ -105,6 +150,7 @@ const Home = () => {
                     alert("Login/Sign Up to edit your notes!");
                   }
                 }}
+                onDelete={()=>onDelete(note._id)}
               />
             ))
           ) : (
