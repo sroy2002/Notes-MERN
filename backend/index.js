@@ -2,6 +2,7 @@ require("dotenv").config();
 //mongoDB connection
 const config = require("./config.json");
 const mongoose = require("mongoose");
+const { Types: { ObjectId } } = require('mongoose');
 mongoose.connect(config.connectionString);
 const Note = require("./models/note.model");
 const express = require("express");
@@ -31,7 +32,7 @@ app.get("/", (req, res) => {
 app.get("/notes", checkJwt, async (req, res) => {
   try {
     const user = req.auth.payload; // get the authenticated user's info
-    const notes = await Note.find({ userId: user.sub }); //Fetch notes for this user
+    const notes = await Note.find({ userId: user.sub }).sort({isPinned:-1,pinnedAt:-1}); //Fetch notes for this user
     res.json({ notes });
   } catch (error) {
     res.status(500).json({
@@ -107,6 +108,7 @@ app.put("/edit-note/:id", checkJwt, async (req, res) => {
   }
 });
 
+//delete notes api
 app.delete("/delete-note/:id", async (req, res) => {
   try {
     const noteId = req.params.id;
@@ -123,6 +125,30 @@ app.delete("/delete-note/:id", async (req, res) => {
       .status(500)
       .json({ message: "An error occurred while deleting the note" });
   }
+});
+
+//update pin status
+app.put("/update-pin/:id/pin", checkJwt, async (req,res)=>{
+    try{
+        const noteId = req.params.id;
+        if (!ObjectId.isValid(noteId)) {
+          return res.status(400).json({message: 'Invalid note ID'});
+      }
+        console.log("Note ID:", noteId);
+        const note = await Note.findById(noteId);
+        if(!note){
+            return res.status(404).json({message: 'Note not found'});
+        }
+        note.isPinned = !note.isPinned; //toggle pin status
+        note.pinnedAt = note.isPinned ? new Date() : null;
+        await note.save();
+        res.json({message:'Note Pin status updated',note});
+
+    }
+    catch(error){
+      console.error('Error in /notes/:id/pin route:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
 });
 
 app.listen(8000);

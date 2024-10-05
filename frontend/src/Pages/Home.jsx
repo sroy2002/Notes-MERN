@@ -34,7 +34,17 @@ const Home = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setNotes(response.data.notes);
+
+        const fetchedNotes = response.data.notes;
+
+        //Separate pinned and unpinned notes
+        const pinnedNotes = fetchedNotes.filter(note=> note.isPinned);
+        const unpinnedNotes = fetchedNotes.filter(note=>!note.isPinned);
+
+        pinnedNotes.sort((a,b)=> new Date(b.pinnedAt)- new Date(a.pinnedAt));
+
+        const combinedNotes = [...pinnedNotes, ...unpinnedNotes];
+        setNotes(combinedNotes);
       } else {
         //if not authenticated, load notes from localstorage
         const localNotes = JSON.parse(localStorage.getItem("notes")) || [];
@@ -51,13 +61,16 @@ const Home = () => {
   }
 
   useEffect(() => {
-    if(isAuthenticated){
-      fetchNotes();
+    const fetchUserNotes = async () => {
+      if(isAuthenticated){
+        await fetchNotes();
+      }
+      else{
+        fetchGuestNotes();
+      }
     }
-    else{
-      fetchGuestNotes();
-    }
-  }, []);
+    fetchUserNotes();
+  }, [isAuthenticated]);
 
 // function to edit notes
   const updateNote = async (updatedNote) => {
@@ -141,6 +154,8 @@ const onDelete = (noteId) =>{
                 title={note.title}
                 content={note.content}
                 createdOn={note.createdOn}
+                noteId = {note._id}
+                isPinned = {note.isPinned}
                 tags={note.tags}
                 onEdit={()=>{
                   if(isAuthenticated){
