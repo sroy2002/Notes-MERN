@@ -164,5 +164,45 @@ app.put("/update-pin/:id/pin", checkJwt, async (req, res) => {
   }
 });
 
+// search notes api
+app.get("/search-notes/", checkJwt, async (req, res) => {
+  const { query } = req.query;
+  const user = req.auth.payload;
+
+  if (!user) {
+    return res
+      .status(401)
+      .json({ error: true, message: "User not authenticated." });
+  }
+
+  if (!query) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Search query is required!" });
+  }
+
+  try {
+    const matchingNotes = await Note.find({
+      userId: user._id,
+      $or: [
+        { title: { $regex: new RegExp(query, "i") } },
+        { content: { $regex: new RegExp(query, "i") } },
+        { tags: { $regex: new RegExp(query, "i") } },
+      ],
+    });
+
+    return res.json({
+      error: false,
+      notes: matchingNotes,
+      message: "Notes matching the search query retrieved success",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Internal Server Error",
+    });
+  }
+});
+
 app.listen(8000);
 module.exports = app;

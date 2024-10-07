@@ -15,6 +15,8 @@ const Home = () => {
   const [notes, setNotes] = useState([]);
   const [panel, setPanel] = useState(false);
   const [pinnedCount, setPinnedCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearch, setIsSearch] = useState(false);
   const [openModal, setOpenModal] = useState({
     isShown: false,
     type: "add",
@@ -140,9 +142,29 @@ const Home = () => {
     }
   };
 
+  // function to search for a note (authenticated users only)
+  const onSearchNote = async (searchQuery) => {
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await axios.get("/search-notes", {
+        params: { query: searchQuery },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Search Response: ", response.data);
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        setNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.error("Error searching notes: ", error);
+    }
+  };
+
   return (
     <div>
-      <Navbar handlePanel={handlePanel} />
+      <Navbar handlePanel={handlePanel} setNotes={setNotes} onSearchNote={onSearchNote} fetchNotes={fetchNotes}/>
       <div className="wrapper">
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
