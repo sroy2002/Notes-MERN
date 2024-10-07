@@ -13,14 +13,22 @@ const Notecard = ({
   isPinned,
   onEdit,
   onDelete,
+  fetchNotes,
+  pinnedCount,
+  setPinnedCount
 }) => {
   const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } =
-    useAuth0(); // Auth0 hook
+  useAuth0(); // Auth0 hook
   const [pinned, setIsPinned] = useState(isPinned);
 
+  
   const onPinNote = async (noteid) => {
     if (isAuthenticated) {
-      console.log(noteid);
+       // Check if pinning limit is reached
+       if (!pinned && pinnedCount >= 3) {
+        alert("You can only pin up to 3 notes.");
+        return;
+      }
       try {
         const accessToken = await getAccessTokenSilently();
         const response = await fetch(
@@ -35,12 +43,18 @@ const Notecard = ({
 
         //update local pinned state based on server response
         if(response.status === 200){
-          setIsPinned(!pinned); //toggle pin status
+          const newPinnedStatus = !pinned;
+          setIsPinned(newPinnedStatus);
+
+          // Update pinned count accordingly
+          if (newPinnedStatus) {
+            setPinnedCount(pinnedCount + 1);
+          } else {
+            setPinnedCount(pinnedCount - 1);
+          }
           alert("Pin status updated!");
+          fetchNotes();
         }
-        // const data = await response.json();
-        // setIsPinned(data.note.isPinned);
-        // alert("Pin status updated successfully!");
       } catch (error) {
         console.error("Error pinning the note: ", error);
         alert("Failed to update pin status.");
