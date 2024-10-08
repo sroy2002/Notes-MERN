@@ -7,6 +7,10 @@ const TagInput = ({ tags, setTags }) => {
     setInputValue(e.target.value);
   };
   const addNewTag = () => {
+    if(tags.length>=3){
+      alert("You can only add 3 tags!");
+      return;
+    }
     if (inputValue.trim() !== "") {
       setTags([...tags, inputValue.trim()]);
       setInputValue("");

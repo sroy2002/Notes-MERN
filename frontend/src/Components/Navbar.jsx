@@ -5,12 +5,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "../Styles/Navbar.scss";
 import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
-import axios from "../api";
 const Navbar = ({ handlePanel, fetchNotes, onSearchNote }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLight, setIsLight] = useState(true);
   const { 
-    getAccessTokenSilently,
     loginWithRedirect, 
     logout, 
     isAuthenticated, 
@@ -31,25 +29,10 @@ const Navbar = ({ handlePanel, fetchNotes, onSearchNote }) => {
       alert("You must be logged in to search.");
       return;
     }
-    // if(searchQuery){
-    //   onSearchNote(searchQuery);
-    // }
     if (searchQuery) {
       console.log("Searching for: ", searchQuery); // Log the search query
       await onSearchNote(searchQuery);
     }
-    // try{
-    //     const token = await getAccessTokenSilently();
-    //     const response = await axios.get(`/search-notes?query=${searchQuery}`,{
-    //       headers:{
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     });
-    //     setNotes(response.data.notes);
-    // }
-    // catch(error){
-    //   console.error("Error searching notes: ", error);
-    // }
   };
 
   return (
