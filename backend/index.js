@@ -183,7 +183,7 @@ app.get("/search-notes/", checkJwt, async (req, res) => {
 
   try {
     const matchingNotes = await Note.find({
-      userId: user._id,
+      user_Id: user.userId,
       $or: [
         { title: { $regex: new RegExp(query, "i") } },
         { content: { $regex: new RegExp(query, "i") } },

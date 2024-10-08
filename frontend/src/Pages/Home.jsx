@@ -143,11 +143,11 @@ const Home = () => {
   };
 
   // function to search for a note (authenticated users only)
-  const onSearchNote = async (searchQuery) => {
+  const onSearchNote = async (query) => {
     try {
       const token = await getAccessTokenSilently();
       const response = await axios.get("/search-notes", {
-        params: { query: searchQuery },
+        params: { query },
         headers: {
           Authorization: `Bearer ${token}`,
         },
