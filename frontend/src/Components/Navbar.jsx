@@ -5,7 +5,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "../Styles/Navbar.scss";
 import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
-const Navbar = ({ handlePanel, fetchNotes, onSearchNote }) => {
+import { toast } from "react-toastify";
+
+const Navbar = ({ handlePanel, fetchNotes, onSearchNote, fetchGuestNotes }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLight, setIsLight] = useState(true);
   const { 
@@ -21,12 +23,18 @@ const Navbar = ({ handlePanel, fetchNotes, onSearchNote }) => {
 
   const onClearSearch = () => {
     setSearchQuery("");
-    fetchNotes();
+    
+    if(isAuthenticated) {
+      fetchNotes();
+    }
+    else{
+      fetchGuestNotes();
+    }
   };
 
   const handleSearch = async () => {
     if(!isAuthenticated){
-      alert("You must be logged in to search.");
+      toast.error("You must be logged in to search.");
       return;
     }
     if (searchQuery) {

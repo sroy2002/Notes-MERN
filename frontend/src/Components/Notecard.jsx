@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { toast } from "react-toastify";
 import { useAuth0 } from "@auth0/auth0-react";
 import { BsPinFill, BsPinAngle } from "react-icons/bs";
 import { MdCreate, MdDelete } from "react-icons/md";
@@ -15,18 +15,17 @@ const Notecard = ({
   onDelete,
   fetchNotes,
   pinnedCount,
-  setPinnedCount
+  setPinnedCount,
 }) => {
   const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } =
-  useAuth0(); // Auth0 hook
+    useAuth0(); // Auth0 hook
   const [pinned, setIsPinned] = useState(isPinned);
 
-  
   const onPinNote = async (noteid) => {
     if (isAuthenticated) {
-       // Check if pinning limit is reached
-       if (!pinned && pinnedCount >= 3) {
-        alert("You can only pin up to 3 notes.");
+      // Check if pinning limit is reached
+      if (!pinned && pinnedCount >= 3) {
+        toast.info("You can only pin up to 3 notes.");
         return;
       }
       try {
@@ -42,7 +41,7 @@ const Notecard = ({
         );
 
         //update local pinned state based on server response
-        if(response.status === 200){
+        if (response.status === 200) {
           const newPinnedStatus = !pinned;
           setIsPinned(newPinnedStatus);
 
@@ -52,19 +51,19 @@ const Notecard = ({
           } else {
             setPinnedCount(pinnedCount - 1);
           }
-          alert("Pin status updated!");
+          toast.success("Pin status updated!");
           fetchNotes();
         }
       } catch (error) {
         console.error("Error pinning the note: ", error);
-        alert("Failed to update pin status.");
+        toast.error("Failed to update pin status.");
       }
     } else {
-      alert("You need to sign up/login to pin your notes!");
+      toast.info("You need to sign up/login to pin your notes!");
       loginWithRedirect();
       return;
     }
-  }
+  };
 
   const formattedDate = new Date(createdOn).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -85,17 +84,15 @@ const Notecard = ({
               <BsPinFill
                 className="pin-icon pinned"
                 onClick={() => {
-                  console.log("Pin icon clicked for note ID:", noteId);
                   onPinNote(noteId);
-              }}
+                }}
               />
             ) : (
               <BsPinAngle
                 className="pin-icon not-pinned"
                 onClick={() => {
-                  console.log("Pin icon clicked for note ID:", noteId);
                   onPinNote(noteId);
-              }}
+                }}
               />
             )}
           </div>

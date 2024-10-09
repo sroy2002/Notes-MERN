@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import "../Styles/TagInput.scss";
 const TagInput = ({ tags, setTags }) => {
@@ -8,7 +9,7 @@ const TagInput = ({ tags, setTags }) => {
   };
   const addNewTag = () => {
     if(tags.length>=3){
-      alert("You can only add 3 tags!");
+      toast.error("You can only add 3 tags!");
       return;
     }
     if (inputValue.trim() !== "") {

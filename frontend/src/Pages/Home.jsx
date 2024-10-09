@@ -7,6 +7,7 @@ import Notecard from "../Components/Notecard";
 import SidePannel from "../Components/SidePannel";
 import axios from "../api";
 import { useAuth0 } from "@auth0/auth0-react";
+import { toast } from "react-toastify";
 import Create from "../Components/Create";
 // import { locals } from "../../../backend";
 
@@ -15,7 +16,7 @@ const Home = () => {
   const [notes, setNotes] = useState([]);
   const [panel, setPanel] = useState(false);
   const [pinnedCount, setPinnedCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  
   const [isSearch, setIsSearch] = useState(false);
   const [openModal, setOpenModal] = useState({
     isShown: false,
@@ -113,14 +114,14 @@ const Home = () => {
 
       if (!response.ok) {
         const result = await response.json();
-        alert("Failed to delete the note!");
+        toast.error("Failed to delete the note!");
         console.log(result);
       } else {
-        alert("Note deleted successfully!");
+        toast.success("Note deleted successfully!");
         fetchNotes();
       }
     } catch (error) {
-      alert("Note deletion failed!");
+      toast.error("Note deletion failed!");
       console.log("Error deleting note: ", error);
     }
   };
@@ -128,9 +129,9 @@ const Home = () => {
   //Function to delete note from session storage for guest users
   const deleteNoteForGuests = (noteId) => {
     let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
-    notes = notes.filter((note) => note._id !== noteId); //use unique id for filtering
+    notes = notes.filter((note) => note.id !== noteId); //use unique id for filtering
     sessionStorage.setItem("guestNotes", JSON.stringify(notes));
-    alert("Note deleted!");
+    toast.error("Note deleted!");
     fetchGuestNotes();
   };
 
@@ -164,14 +165,21 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar handlePanel={handlePanel} setNotes={setNotes} onSearchNote={onSearchNote} fetchNotes={fetchNotes}/>
+      <Navbar
+        handlePanel={handlePanel}
+        setNotes={setNotes}
+        onSearchNote={onSearchNote}
+        fetchNotes={fetchNotes}
+        fetchGuestNotes={fetchGuestNotes}
+      />
       <div className="wrapper">
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
         </div>
         <div className="sub-container">
           {notes.length ? (
-            notes.map((note) => (
+            notes.map((note) => note 
+            && (
               <Notecard
                 key={note._id}
                 title={note.title}
@@ -181,11 +189,7 @@ const Home = () => {
                 isPinned={note.isPinned}
                 tags={note.tags}
                 onEdit={() => {
-                  if (isAuthenticated) {
-                    setOpenModal({ isShown: true, type: "edit", data: note });
-                  } else {
-                    alert("Login/Sign Up to edit your notes!");
-                  }
+                  setOpenModal({ isShown: true, type: "edit", data: note });
                 }}
                 onDelete={() => onDelete(note._id)}
                 fetchNotes={fetchNotes}

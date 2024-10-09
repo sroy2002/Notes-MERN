@@ -3,16 +3,10 @@ import "../Styles/Edit.scss";
 import TagInput from "./TagInput";
 import { IoMdClose } from "react-icons/io";
 import { useAuth0 } from "@auth0/auth0-react";
+import { toast } from "react-toastify";
 // import { locals } from "../../../backend";
 
-const Create = ({
-  fetchGuestNotes,
-  fetchNotes,
-  data,
-  type,
-  onEdit,
-  onClose,
-}) => {
+const Create = ({ fetchGuestNotes, fetchNotes, data, type, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
@@ -34,7 +28,6 @@ const Create = ({
     let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
     notes.push(newNote);
     sessionStorage.setItem("guestNotes", JSON.stringify(notes));
-    alert("Note added to local storage!");
     onClose();
     fetchGuestNotes();
   };
@@ -67,7 +60,7 @@ const Create = ({
         setError(result.message || "Failed to add note.");
       } else {
         setError(null);
-        alert("Note added successfully!");
+        toast.success("Note added successfully!");
         onClose();
         fetchNotes();
       }
@@ -115,7 +108,7 @@ const Create = ({
         setError(result.message || "Failed to edit note.");
       } else {
         setError(null);
-        alert("Note updated successfully!");
+        toast.success("Note updated successfully!");
         onClose(); // Close modal on successful update
         fetchNotes();
       }
@@ -123,6 +116,20 @@ const Create = ({
       console.error("Error updating note:", error);
       setError("An unexpected error occurred.");
     }
+  };
+
+  // edit notes for guest users
+
+  const editNoteInSessionStorage = () => {
+    const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+    const updateNotes = guestNotes.map((note) => {
+      if (note.id === data.id) {
+        return { ...title, content, tags };
+      } else {
+        return note;
+      }
+    });
+    sessionStorage.setItem("guestNotes", JSON.stringify(updateNotes));
   };
 
   const handleAddNote = () => {
@@ -143,11 +150,14 @@ const Create = ({
         addNewNote();
       }
     } else {
-      if(type==="edit"){
-        alert("Login/Sign Up to edit your notes!");
-      }
-      else{
+      if (type === "edit") {
+        editNoteInSessionStorage();
+        onClose();
+        fetchGuestNotes();
+        toast.success("Note updated!");
+      } else {
         addNoteToLocalStorage();
+        toast.success("Note added!");
       }
     }
   };
