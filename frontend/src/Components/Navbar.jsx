@@ -7,15 +7,16 @@ import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { FaBars } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
-const Navbar = ({ handlePanel, fetchNotes, onSearchNote, fetchGuestNotes }) => {
+const Navbar = ({
+  handlePanel,
+  setNotes,
+  fetchNotes,
+  onSearchNote,
+  fetchGuestNotes,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLight, setIsLight] = useState(true);
-  const { 
-    loginWithRedirect, 
-    logout, 
-    isAuthenticated, 
-    user 
-  } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
 
   const handleLight = () => {
     setIsLight(!isLight);
@@ -23,23 +24,50 @@ const Navbar = ({ handlePanel, fetchNotes, onSearchNote, fetchGuestNotes }) => {
 
   const onClearSearch = () => {
     setSearchQuery("");
-    
-    if(isAuthenticated) {
+
+    if (isAuthenticated) {
       fetchNotes();
-    }
-    else{
+    } else {
       fetchGuestNotes();
     }
   };
 
+  // search for guest users
+  const searchGuestNotes = (query) => {
+    const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+
+    //filter notes based on the search query
+    const filterNotes = guestNotes.filter((note) => {
+      const searchLower = query.toLowerCase();
+      const title = note.title ? note.title.toLowerCase() : "";
+      const content = note.content ? note.content.toLowerCase() : "";
+      const tags = note.tags ? note.tags : [];
+      return (
+        title.includes(searchLower) ||
+        content.includes(searchLower) ||
+        tags.some((tag) => tag.toLowerCase().includes(searchLower))
+      );
+    });
+
+    return filterNotes;
+  };
   const handleSearch = async () => {
-    if(!isAuthenticated){
-      toast.error("You must be logged in to search.");
-      return;
-    }
-    if (searchQuery) {
-      console.log("Searching for: ", searchQuery); // Log the search query
-      await onSearchNote(searchQuery);
+    if (isAuthenticated) {
+      if (!searchQuery) {
+        toast.error("Empty search is not allowed!");
+        fetchNotes();
+      } else {
+        console.log("Searching for: ", searchQuery); // Log the search query
+        await onSearchNote(searchQuery);
+      }
+    } else {
+      if (!searchQuery) {
+        toast.error("Empty search is not allowed!");
+        fetchGuestNotes();
+      } else {
+        const filtered = searchGuestNotes(searchQuery);
+        setNotes(filtered);
+      }
     }
   };
 
