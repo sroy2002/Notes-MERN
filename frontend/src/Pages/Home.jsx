@@ -129,8 +129,13 @@ const Home = () => {
   //Function to delete note from session storage for guest users
   const deleteNoteForGuests = (noteId) => {
     let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+    // Log the notes and the noteId to be deleted
+  console.log("Notes before deletion:", notes);
+  console.log("Note to delete (ID):", noteId);
     notes = notes.filter((note) => note.id !== noteId); //use unique id for filtering
+    console.log("Notes after deletion:", notes);
     sessionStorage.setItem("guestNotes", JSON.stringify(notes));
+    console.log("Updated sessionStorage:", sessionStorage.getItem("guestNotes"));
     toast.error("Note deleted!");
     fetchGuestNotes();
   };
@@ -139,6 +144,7 @@ const Home = () => {
     if (isAuthenticated) {
       deleteNote(noteId);
     } else {
+      console.log(noteId);
       deleteNoteForGuests(noteId);
     }
   };
@@ -191,7 +197,14 @@ const Home = () => {
                 onEdit={() => {
                   setOpenModal({ isShown: true, type: "edit", data: note });
                 }}
-                onDelete={() => onDelete(note._id)}
+                onDelete={() => {
+                  if(isAuthenticated){
+                    onDelete(note._id)
+                  }
+                  else{
+                    onDelete(note.id)
+                  }
+                }}
                 fetchNotes={fetchNotes}
                 pinnedCount={pinnedCount} // Pass current pinned count
                 setPinnedCount={setPinnedCount} // Pass function to update pinned count

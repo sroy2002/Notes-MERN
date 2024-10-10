@@ -66,7 +66,12 @@ const Navbar = ({
         fetchGuestNotes();
       } else {
         const filtered = searchGuestNotes(searchQuery);
-        setNotes(filtered);
+        if(filtered.length==0){
+          toast.error("Note not found!");
+        }
+        else{
+          setNotes(filtered);
+        }
       }
     }
   };
