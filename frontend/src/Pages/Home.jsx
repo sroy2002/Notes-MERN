@@ -9,6 +9,8 @@ import axios from "../api";
 import { useAuth0 } from "@auth0/auth0-react";
 import { toast } from "react-toastify";
 import Create from "../Components/Create";
+import NotFound from "../Components/NotFound";
+import AddNote from "../Components/AddNote";
 // import { locals } from "../../../backend";
 
 const Home = () => {
@@ -18,6 +20,7 @@ const Home = () => {
   const [pinnedCount, setPinnedCount] = useState(0);
   
   const [isSearch, setIsSearch] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [openModal, setOpenModal] = useState({
     isShown: false,
     type: "add",
@@ -168,7 +171,8 @@ const Home = () => {
       console.error("Error searching notes: ", error);
     }
   };
-
+  console.log(searchError);
+  console.log(isSearch);
   return (
     <div>
       <Navbar
@@ -177,12 +181,16 @@ const Home = () => {
         onSearchNote={onSearchNote}
         fetchNotes={fetchNotes}
         fetchGuestNotes={fetchGuestNotes}
+        
+        setSearchError={setSearchError}
       />
       <div className="wrapper">
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
         </div>
+       
         <div className="sub-container">
+          
           {notes.length ? (
             notes.map((note) => note 
             && (
@@ -210,9 +218,8 @@ const Home = () => {
                 setPinnedCount={setPinnedCount} // Pass function to update pinned count
               />
             ))
-          ) : (
-            <p>No Notes to display</p>
-          )}
+          ) : (isSearch ? ( searchError && <NotFound/>) : (<AddNote/>))}
+          
         </div>
       </div>
       <div className="create">

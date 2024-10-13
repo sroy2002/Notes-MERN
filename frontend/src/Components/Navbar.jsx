@@ -13,6 +13,8 @@ const Navbar = ({
   fetchNotes,
   onSearchNote,
   fetchGuestNotes,
+ 
+  setSearchError
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLight, setIsLight] = useState(true);
@@ -67,7 +69,7 @@ const Navbar = ({
       } else {
         const filtered = searchGuestNotes(searchQuery);
         if(filtered.length==0){
-          toast.error("Note not found!");
+          setSearchError(true);
         }
         else{
           setNotes(filtered);
