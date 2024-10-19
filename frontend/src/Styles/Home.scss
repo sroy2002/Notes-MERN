@@ -19,6 +19,16 @@ body {
   grid-template-columns: repeat(5, 1fr);
   margin: 2rem 2.5rem;
   gap: 1.5rem;
+  .empty-state {
+    grid-column: 1 / -1; // Span all columns
+    grid-row: 1; // Place it in the first row
+    display: flex;
+    align-items: center; // Center items vertically
+    justify-content: center; // Center items horizontally
+    flex-direction: column; // Stack items vertically
+    height: 100%; // Ensure it takes full height
+    text-align: center; // Center text inside
+  }
 }
 .wrapper {
   display: flex;

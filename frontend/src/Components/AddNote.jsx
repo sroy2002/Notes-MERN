@@ -1,21 +1,48 @@
-import React from 'react';
-import { Player } from '@lottiefiles/react-lottie-player';
-import AddNoteImage from '../assets/add.json';
-import '../Styles/AddNote.scss';
+import React, { useEffect, useRef } from "react";
+import lottie from "lottie-web";
+import animationData from "../assets/add.json"; // Adjust the path to your animation JSON
 
-const AddNote = () =>{
-    return (
-        <div className='addnote'>
-            <Player
-                autoplay
-                // loop={false}
-                src={AddNoteImage}
-                style={{ height: '20rem', width: '20rem' }}
-                speed={1}
-            />
-            <h2>Start adding notes</h2>
-        </div>
-    );
-}
+const AddNote = () => {
+  const animationContainer = useRef(null);
+  const animationInstance = useRef(null);
+
+  useEffect(() => {
+    // Initialize the Lottie animation
+    animationInstance.current = lottie.loadAnimation({
+      container: animationContainer.current, // the DOM element to mount the animation on
+      renderer: "svg",
+      loop: false, // Disable loop for hover interaction
+      autoplay: true, // Autoplay when component mounts
+      animationData: animationData, // Use the imported animation data
+    });
+
+    // Clean up the animation on component unmount
+    return () => {
+      if (animationInstance.current) {
+        animationInstance.current.destroy();
+      }
+    };
+  }, []);
+
+  // Function to replay the animation when hovered
+  const handleMouseEnter = () => {
+    const startFrame = 30; // Specify the frame number you want to start from
+    if (animationInstance.current) {
+      animationInstance.current.goToAndStop(startFrame, true); // Go to the specified frame and stop there
+      animationInstance.current.play(); // Play the animation from the specified frame
+    }
+  };
+
+  return (
+    <div className="addnote">
+      <div
+        ref={animationContainer}
+        onMouseEnter={handleMouseEnter}
+        style={{ width: 300, height: 300 }} // Adjust size as needed
+      />
+      <h3 className="poppins-regular"> Start adding notes!</h3>
+    </div>
+  );
+};
 
 export default AddNote;

@@ -18,7 +18,7 @@ const Home = () => {
   const [notes, setNotes] = useState([]);
   const [panel, setPanel] = useState(false);
   const [pinnedCount, setPinnedCount] = useState(0);
-  
+
   const [isSearch, setIsSearch] = useState(false);
   const [searchError, setSearchError] = useState(false);
   const [openModal, setOpenModal] = useState({
@@ -133,12 +133,15 @@ const Home = () => {
   const deleteNoteForGuests = (noteId) => {
     let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
     // Log the notes and the noteId to be deleted
-  console.log("Notes before deletion:", notes);
-  console.log("Note to delete (ID):", noteId);
+    console.log("Notes before deletion:", notes);
+    console.log("Note to delete (ID):", noteId);
     notes = notes.filter((note) => note.id !== noteId); //use unique id for filtering
     console.log("Notes after deletion:", notes);
     sessionStorage.setItem("guestNotes", JSON.stringify(notes));
-    console.log("Updated sessionStorage:", sessionStorage.getItem("guestNotes"));
+    console.log(
+      "Updated sessionStorage:",
+      sessionStorage.getItem("guestNotes")
+    );
     toast.error("Note deleted!");
     fetchGuestNotes();
   };
@@ -162,7 +165,7 @@ const Home = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Search Response: ", response.data);
+      // console.log("Search Response: ", response.data);
       if (response.data && response.data.notes) {
         setIsSearch(true);
         setNotes(response.data.notes);
@@ -172,7 +175,7 @@ const Home = () => {
     }
   };
   console.log(searchError);
-  console.log(isSearch);
+  // console.log(isSearch);
   return (
     <div>
       <Navbar
@@ -181,45 +184,48 @@ const Home = () => {
         onSearchNote={onSearchNote}
         fetchNotes={fetchNotes}
         fetchGuestNotes={fetchGuestNotes}
-        
         setSearchError={setSearchError}
       />
       <div className="wrapper">
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
         </div>
-       
+
         <div className="sub-container">
-          
           {notes.length ? (
-            notes.map((note) => note 
-            && (
-              <Notecard
-                key={note._id}
-                title={note.title}
-                content={note.content}
-                createdOn={note.createdOn}
-                noteId={note._id}
-                isPinned={note.isPinned}
-                tags={note.tags}
-                onEdit={() => {
-                  setOpenModal({ isShown: true, type: "edit", data: note });
-                }}
-                onDelete={() => {
-                  if(isAuthenticated){
-                    onDelete(note._id)
-                  }
-                  else{
-                    onDelete(note.id)
-                  }
-                }}
-                fetchNotes={fetchNotes}
-                pinnedCount={pinnedCount} // Pass current pinned count
-                setPinnedCount={setPinnedCount} // Pass function to update pinned count
-              />
-            ))
-          ) : (isSearch ? ( searchError && <NotFound/>) : (<AddNote/>))}
-          
+            notes.map(
+              (note) =>
+                note && (
+                  <Notecard
+                    key={note._id}
+                    title={note.title}
+                    content={note.content}
+                    createdOn={note.createdOn}
+                    noteId={note._id}
+                    isPinned={note.isPinned}
+                    tags={note.tags}
+                    onEdit={() => {
+                      setOpenModal({ isShown: true, type: "edit", data: note });
+                    }}
+                    onDelete={() => {
+                      if (isAuthenticated) {
+                        onDelete(note._id);
+                      } else {
+                        onDelete(note.id);
+                      }
+                    }}
+                    fetchNotes={fetchNotes}
+                    pinnedCount={pinnedCount} // Pass current pinned count
+                    setPinnedCount={setPinnedCount} // Pass function to update pinned count
+                  />
+                )
+            )
+          ) : (
+            <div className="empty-state">
+              {console.log(searchError)}
+              {isSearch ? (!searchError ? <NotFound />:"No note found!") : <AddNote />}
+            </div>
+          )}
         </div>
       </div>
       <div className="create">

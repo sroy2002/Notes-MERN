@@ -1,19 +1,48 @@
-import React from 'react';
-import { Player } from '@lottiefiles/react-lottie-player';
-import NoNoteFound from '../assets/not found.json';
-import '../Styles/NotFound.scss';
-const NotFound = () =>{
-    return (
-    <div className='searchError'>
-        <Player
-            autoplay
-            src={NoNoteFound}
-            loop
-            style={{height:'20rem', width: '20rem'}}
-        />
-        <h2>Oops! No notes found.</h2>
+import React, { useEffect, useRef } from "react";
+// import { Player } from '@lottiefiles/react-lottie-player';
+import lottie from "lottie-web";
+import NoNoteFound from "../assets/not found.json";
+import "../Styles/NotFound.scss";
+
+const NotFound = () => {
+  const animationContainer = useRef(null);
+  const animationInstance = useRef(null);
+  useEffect(() => {
+    // Initialize the Lottie animation
+    animationInstance.current = lottie.loadAnimation({
+      container: animationContainer.current, // the DOM element to mount the animation on
+      renderer: "svg",
+      loop: true, // Disable loop for hover interaction
+      autoplay: true, // Autoplay when component mounts
+      animationData: NoNoteFound, // Use the imported animation data
+    });
+
+    // Clean up the animation on component unmount
+    return () => {
+      if (animationInstance.current) {
+        animationInstance.current.destroy();
+      }
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    const startFrame = 30; // Specify the frame number you want to start from
+    if (animationInstance.current) {
+      animationInstance.current.goToAndStop(startFrame, true); // Go to the specified frame and stop there
+      animationInstance.current.play(); // Play the animation from the specified frame
+    }
+  };
+
+  return (
+    <div className="searchError">
+      <div
+        ref={animationContainer}
+        onMouseEnter={handleMouseEnter}
+        style={{ width: 250, height: 250 }} // Adjust size as needed
+      />
+      <h2>Oops! No notes found.</h2>
     </div>
-    )
-}
+  );
+};
 
 export default NotFound;

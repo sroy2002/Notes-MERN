@@ -54,6 +54,7 @@ const Navbar = ({
     return filterNotes;
   };
   const handleSearch = async () => {
+    setSearchError(false);
     if (isAuthenticated) {
       if (!searchQuery) {
         toast.error("Empty search is not allowed!");
@@ -73,6 +74,7 @@ const Navbar = ({
         }
         else{
           setNotes(filtered);
+          setSearchError(false);
         }
       }
     }
