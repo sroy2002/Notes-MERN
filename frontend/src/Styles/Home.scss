@@ -1,20 +1,46 @@
 @import "variables";
 @import "_mixin";
 body {
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+.pattern-background {
   background-color: $bg-color-light;
-  margin: 0rem;
   background-image: radial-gradient(
     #ababab 1px,
     transparent 1px
   ); /* Dot color and size */
   background-size: 20px 20px; /* Distance between dots */
-  width: 100%;
-  height: 100vh; /* Adjust as needed */
 }
+
+.blank-background {
+  background-color: $bg-color-light;
+  background-image: none; /* No pattern */
+}
+// body {
+//   background-color: $bg-color-light;
+//   margin: 0rem;
+//   background-image: radial-gradient(
+//     #ababab 1px,
+//     transparent 1px
+//   ); /* Dot color and size */
+//   background-size: 20px 20px; /* Distance between dots */
+//   width: 100%;
+//   height: 100vh; /* Adjust as needed */
+// }
+
+// .blank-bg {
+//   body {
+//     background-color: $bg-color-light;
+//     margin: 0rem;
+//   }
+// }
 
 .sub-container {
   display: grid;
-  width:100%;
+  width: 100%;
   box-sizing: border-box;
   grid-template-columns: repeat(5, 1fr);
   margin: 2rem 2.5rem;
@@ -76,14 +102,13 @@ body {
     }
   }
 }
-.modal-styles{
+.modal-styles {
   width: 40%;
   max-height: auto;
   background-color: white;
   margin: 2rem auto;
-  padding:  0.2rem 1rem;
+  padding: 0.2rem 1rem;
   border-radius: 0.8rem;
-
 }
 @include respond-to(mobile) {
   .wrapper {
@@ -97,19 +122,18 @@ body {
       margin: 1rem 2rem;
     }
   }
-  .create{
-    button{
+  .create {
+    button {
       width: 3rem;
       height: 3rem;
       font-size: 1rem;
     }
   }
-  .modal-styles{
+  .modal-styles {
     height: auto;
-    min-width:60%;
-    padding:  0.2rem 0.5rem;
+    min-width: 60%;
+    padding: 0.2rem 0.5rem;
   }
- 
 }
 @include respond-to(tabSmall) {
   .wrapper {
@@ -123,19 +147,18 @@ body {
       grid-template-columns: repeat(1, 1fr);
     }
   }
-  .create{
-    button{
+  .create {
+    button {
       width: 3rem;
       height: 3rem;
       font-size: 1rem;
     }
   }
-  .modal-styles{
+  .modal-styles {
     height: auto;
-    min-width:70%;
-    padding:  0.2rem 0.5rem;
+    min-width: 70%;
+    padding: 0.2rem 0.5rem;
   }
-  
 }
 @include respond-to(tab) {
   .wrapper {
@@ -150,22 +173,21 @@ body {
       padding-left: 0rem;
       padding-right: 0.5rem;
       margin: 2rem 1rem;
-      grid-auto-rows: minmax(100px, 150px)
+      grid-auto-rows: minmax(100px, 150px);
     }
   }
-  .create{
-    button{
+  .create {
+    button {
       width: 3rem;
       height: 3rem;
       font-size: 1rem;
     }
   }
-  .modal-styles{
+  .modal-styles {
     height: auto;
-    min-width:50%;
-    padding:  0.2rem 0.5rem;
+    min-width: 50%;
+    padding: 0.2rem 0.5rem;
   }
-  
 }
 @include respond-to(laptop) {
   .wrapper {
@@ -183,17 +205,17 @@ body {
       margin: 1rem 1.5rem;
     }
   }
-  .create{
-    button{
+  .create {
+    button {
       width: 3.5rem;
       height: 3.5rem;
       font-size: 1.5rem;
     }
   }
-  .modal-styles{
+  .modal-styles {
     height: auto;
-    min-width:50%;
-    padding:  0.2rem 0.5rem;
+    min-width: 50%;
+    padding: 0.2rem 0.5rem;
   }
 }
 

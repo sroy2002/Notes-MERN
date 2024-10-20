@@ -13,7 +13,6 @@ const Navbar = ({
   fetchNotes,
   onSearchNote,
   fetchGuestNotes,
- 
   setSearchError
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,8 +28,10 @@ const Navbar = ({
 
     if (isAuthenticated) {
       fetchNotes();
+      setSearchError(false);
     } else {
       fetchGuestNotes();
+      setSearchError(false);
     }
   };
 
@@ -59,21 +60,27 @@ const Navbar = ({
       if (!searchQuery) {
         toast.error("Empty search is not allowed!");
         fetchNotes();
+        setSearchError(false);
       } else {
-        console.log("Searching for: ", searchQuery); // Log the search query
-        await onSearchNote(searchQuery);
+        const result = await onSearchNote(searchQuery);
+        if(!result || !Array.isArray(result) || result.length === 0){
+          setSearchError(true);
+        }
+        else{
+          setSearchError(false);
+        }
       }
     } else {
       if (!searchQuery) {
         toast.error("Empty search is not allowed!");
         fetchGuestNotes();
       } else {
-        const filtered = searchGuestNotes(searchQuery);
-        if(filtered.length==0){
+        const res = searchGuestNotes(searchQuery);
+        if(!res || !Array.isArray(res) || res.length === 0){
           setSearchError(true);
         }
         else{
-          setNotes(filtered);
+          setNotes(res);
           setSearchError(false);
         }
       }

@@ -26,6 +26,21 @@ const Home = () => {
     type: "add",
     data: null,
   });
+  useEffect(() => {
+    if (searchError || notes.length === 0) {
+      document.body.classList.add("blank-background");
+      document.body.classList.remove("pattern-background");
+    } else {
+      document.body.classList.add("pattern-background");
+      document.body.classList.remove("blank-background");
+    }
+
+    // Cleanup on component unmount
+    return () => {
+      document.body.classList.remove("pattern-background","blank-background");
+    };
+  }, [searchError,notes]);
+
   const handlePanel = () => {
     setPanel(!panel);
   };
@@ -165,7 +180,6 @@ const Home = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log("Search Response: ", response.data);
       if (response.data && response.data.notes) {
         setIsSearch(true);
         setNotes(response.data.notes);
@@ -174,8 +188,6 @@ const Home = () => {
       console.error("Error searching notes: ", error);
     }
   };
-  console.log(searchError);
-  // console.log(isSearch);
   return (
     <div>
       <Navbar
@@ -222,8 +234,7 @@ const Home = () => {
             )
           ) : (
             <div className="empty-state">
-              {console.log(searchError)}
-              {isSearch ? (!searchError ? <NotFound />:"No note found!") : <AddNote />}
+              {isSearch ? (searchError ? <NotFound />:"No note found!") : <AddNote />}
             </div>
           )}
         </div>
