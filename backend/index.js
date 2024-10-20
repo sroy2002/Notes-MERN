@@ -168,7 +168,7 @@ app.put("/update-pin/:id/pin", checkJwt, async (req, res) => {
 app.get("/search-notes/", checkJwt, async (req, res) => {
   const { query } = req.query;
   const user = req.auth.payload;
-
+  
   if (!user) {
     return res
       .status(401)
@@ -183,7 +183,7 @@ app.get("/search-notes/", checkJwt, async (req, res) => {
 
   try {
     const matchingNotes = await Note.find({
-      user_Id: user.userId,
+      userId: user.sub,
       $or: [
         { title: { $regex: new RegExp(query, "i") } },
         { content: { $regex: new RegExp(query, "i") } },
