@@ -38,7 +38,7 @@ const NotFound = () => {
       <div
         ref={animationContainer}
         onMouseEnter={handleMouseEnter}
-        style={{ width: 300, height: 300 }} // Adjust size as needed
+        className="lottie2"
       />
       <h3 className="poppins-regular">Oops! No notes found.</h3>
     </div>

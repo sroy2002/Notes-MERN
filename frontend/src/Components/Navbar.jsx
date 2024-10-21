@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import appicon from "../assets/note.png";
 import Search from "./Search";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -13,7 +14,7 @@ const Navbar = ({
   fetchNotes,
   onSearchNote,
   fetchGuestNotes,
-  setSearchError
+  setSearchError,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLight, setIsLight] = useState(true);
@@ -63,10 +64,9 @@ const Navbar = ({
         setSearchError(false);
       } else {
         const result = await onSearchNote(searchQuery);
-        if(!result || !Array.isArray(result) || result.length === 0){
+        if (!result || !Array.isArray(result) || result.length === 0) {
           setSearchError(true);
-        }
-        else{
+        } else {
           setSearchError(false);
         }
       }
@@ -76,10 +76,9 @@ const Navbar = ({
         fetchGuestNotes();
       } else {
         const res = searchGuestNotes(searchQuery);
-        if(!res || !Array.isArray(res) || res.length === 0){
+        if (!res || !Array.isArray(res) || res.length === 0) {
           setSearchError(true);
-        }
-        else{
+        } else {
           setNotes(res);
           setSearchError(false);
         }
@@ -118,21 +117,33 @@ const Navbar = ({
           </div>
         )}
         {isAuthenticated ? (
-          <button
+          <motion.button
+            whileHover={{
+            scale: 1.1, 
+              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)", 
+            }}
+            whileTap={{ scale: 0.8 }} 
+            transition={{ duration: 0.01 }} 
             className="poppins-medium"
             onClick={() =>
               logout({ logoutParams: { returnTo: window.location.origin } })
             }
           >
             Log Out
-          </button>
+          </motion.button>
         ) : (
-          <button
+          <motion.button
+            whileHover={{
+              scale: 1.1, 
+              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)", 
+            }}
+            whileTap={{ scale: 0.8 }} 
+            transition={{ duration: 0.01 }} 
             className="poppins-medium login-btn"
             onClick={() => loginWithRedirect()}
           >
             Log In
-          </button>
+          </motion.button>
         )}
       </div>
     </div>

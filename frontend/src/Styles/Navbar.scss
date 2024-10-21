@@ -35,11 +35,6 @@
     border-radius: 2rem;
     cursor: pointer;
     transition: all 0.2s;
-    &:hover {
-      background-color: $primary-color2;
-      filter: $shadow;
-      transform: scale(1.1);
-    }
   }
 }
 

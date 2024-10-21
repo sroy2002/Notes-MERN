@@ -1,8 +1,43 @@
-.searchError{
-    margin: 2rem auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+@import "variables";
+@import "_mixin";
+
+.searchError {
+  margin: 2rem auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .lottie2 {
+    width: 50%;
+    height: auto;
+    max-width: 270px;
+    max-height: 270px;
+    box-sizing: border-box;
+  }
+  h3{
+    font-size: 1rem;
+  }
+}
+
+@include respond-to(mobile){
+    .searchError{
+        h3{
+            font-size: 0.7rem;
+        }
+    }
+}
+@include respond-to(tabSmall){
+    .searchError{
+        h3{
+            font-size: 0.85rem;
+        }
+    }
+}
+@include respond-to(tabMedium){
+    .searchError{
+        h3{
+            font-size: 0.85rem;
+        }
+    }
 }

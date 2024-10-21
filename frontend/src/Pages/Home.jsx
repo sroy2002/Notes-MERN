@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Modal from "react-modal";
-import { IoMdAdd } from "react-icons/io";
+import { BiSolidPencil } from "react-icons/bi";
 import "../Styles/Home.scss";
 import Navbar from "../Components/Navbar";
 import Notecard from "../Components/Notecard";
@@ -26,6 +27,13 @@ const Home = () => {
     type: "add",
     data: null,
   });
+
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.8 },
+  };
+
   useEffect(() => {
     if (searchError || notes.length === 0) {
       document.body.classList.add("blank-background");
@@ -37,9 +45,9 @@ const Home = () => {
 
     // Cleanup on component unmount
     return () => {
-      document.body.classList.remove("pattern-background","blank-background");
+      document.body.classList.remove("pattern-background", "blank-background");
     };
-  }, [searchError,notes]);
+  }, [searchError, notes]);
 
   const handlePanel = () => {
     setPanel(!panel);
@@ -234,19 +242,35 @@ const Home = () => {
             )
           ) : (
             <div className="empty-state">
-              {isSearch ? (searchError ? <NotFound />:"No note found!") : <AddNote />}
+              {isSearch ? (
+                searchError ? (
+                  <NotFound />
+                ) : (
+                  <AddNote />
+                )
+              ) : (
+                <AddNote />
+              )}
             </div>
           )}
         </div>
       </div>
       <div className="create">
-        <button
+        <motion.button
           onClick={() => {
             setOpenModal({ isShown: true, type: "add", data: null });
           }}
+          whileHover={{
+            scale: 1.2, // Slightly increase the size on hover
+            boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)", // Add shadow on hover
+          }}
+          whileTap={{ scale: 0.8 }} // Slightly shrink on tap
+          // initial={{ opacity: 0 }} // Initial opacity for a smooth appearance
+          // animate={{ opacity: 1 }} // Animate to full opacity
+          transition={{ duration: 0.01 }} // Set transition duration
         >
-          <IoMdAdd />
-        </button>
+          <BiSolidPencil />
+        </motion.button>
       </div>
       <Modal
         isOpen={openModal.isShown}
@@ -259,16 +283,24 @@ const Home = () => {
         contentLabel=""
         className="modal-styles"
       >
-        <Create
-          fetchGuestNotes={fetchGuestNotes}
-          fetchNotes={fetchNotes}
-          data={openModal.data}
-          type={openModal.type}
-          onEdit={updateNote}
-          onClose={() => {
-            setOpenModal({ isShown: false, type: "add", data: null });
-          }}
-        />
+        <motion.div
+          variants={modalVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          transition={{ duration: 0.2 }}
+        >
+          <Create
+            fetchGuestNotes={fetchGuestNotes}
+            fetchNotes={fetchNotes}
+            data={openModal.data}
+            type={openModal.type}
+            onEdit={updateNote}
+            onClose={() => {
+              setOpenModal({ isShown: false, type: "add", data: null });
+            }}
+          />
+        </motion.div>
       </Modal>
     </div>
   );

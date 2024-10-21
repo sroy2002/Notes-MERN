@@ -78,11 +78,11 @@ body {
     border-radius: 1rem;
     cursor: pointer;
     transition: all 0.2s;
-    &:hover {
-      background-color: $primary-color2;
-      filter: $shadow;
-      transform: scale(1.1);
-    }
+    // &:hover {
+    //   background-color: $primary-color2;
+    //   filter: $shadow;
+    //   transform: scale(1.1);
+    // }
   }
 }
 .modal-styles {

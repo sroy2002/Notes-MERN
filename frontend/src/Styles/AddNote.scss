@@ -13,25 +13,33 @@
     .lottie1{
         width: 50%;
         height: auto;
-        max-width: 300px;
-        max-height: 300px;
+        max-width: 270px;
+        max-height: 270px;
         box-sizing: border-box;
     }
-    @include respond-to(laptop) {
-        .lottie-animation {
-          width: 70%; // Increase size for smaller screens
-          max-width: 200px; // Adjust as needed for mobile devices
-        }
-      }
-      @include respond-to(tab){
-        .lottie-animation{
-            width:60%;
-        }
-      }
-      @include respond-to(tabSmall){
-        .lottie-animation {
-          width: 80%; // Further increase size for very small screens
-          max-width: 150px; // Adjust as needed for very small devices
-        }
+    h3{
+      font-size: 1rem;
+    }
 }
+
+@include respond-to(mobile){
+  .addnote{
+      h3{
+          font-size: 0.7rem;
+      }
+  }
+}
+@include respond-to(tabSmall){
+  .addnote{
+      h3{
+          font-size: 0.85rem;
+      }
+  }
+}
+@include respond-to(tabMedium){
+  .addnote{
+      h3{
+          font-size: 0.85rem;
+      }
+  }
 }
