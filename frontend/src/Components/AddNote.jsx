@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import lottie from "lottie-web";
 import animationData from "../assets/add.json"; // Adjust the path to your animation JSON
-
+import "../Styles/AddNote.scss";
 const AddNote = () => {
   const animationContainer = useRef(null);
   const animationInstance = useRef(null);
@@ -38,7 +38,7 @@ const AddNote = () => {
       <div
         ref={animationContainer}
         onMouseEnter={handleMouseEnter}
-        style={{ width: 300, height: 300 }} // Adjust size as needed
+        className="lottie1"
       />
       <h3 className="poppins-regular"> Start adding notes!</h3>
     </div>

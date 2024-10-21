@@ -128,7 +128,7 @@ const Navbar = ({
           </button>
         ) : (
           <button
-            className="poppins-medium"
+            className="poppins-medium login-btn"
             onClick={() => loginWithRedirect()}
           >
             Log In

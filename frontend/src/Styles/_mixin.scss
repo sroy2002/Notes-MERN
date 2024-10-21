@@ -1,27 +1,27 @@
-
 @mixin respond-to($breakpoint) {
-    @if $breakpoint == mobile {
-      @media (max-width:$mobileSML) {
-        @content;
-      }
-    
-    } @else if $breakpoint == tabSmall{
-      @media (min-width:425px) and (max-width:497px){
-        @content;
-      }
+  @if $breakpoint == mobile {
+    @media (max-width: $mobileSML) {
+      @content;
     }
-    @else if $breakpoint == tab {
-      @media (min-width: 497px) and (max-width: $tab) {
-        @content;
-      }
-    } @else if $breakpoint == laptop {
-      @media (min-width: $tab) and (max-width:$laptop){
-        @content;
-      }
-    } @else if $breakpoint == desktop{
-      @media (min-width:$laptop){
-        @content;
-      }
+  } @else if $breakpoint == tabSmall {
+    @media (min-width: 425px) and (max-width: 497px) {
+      @content;
+    }
+  } @else if $breakpoint == tabMedium {
+    @media (min-width: 497px) and (max-width: 618px) {
+      @content;
+    }
+  } @else if $breakpoint == tab {
+    @media (min-width: 618px) and (max-width: $tab) {
+      @content;
+    }
+  } @else if $breakpoint == laptop {
+    @media (min-width: $tab) and (max-width: $laptop) {
+      @content;
+    }
+  } @else if $breakpoint == desktop {
+    @media (min-width: $laptop) {
+      @content;
     }
   }
-
+}

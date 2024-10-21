@@ -132,6 +132,39 @@
   }
   
 }
+@include respond-to(tabMedium){
+  .parent{
+    width: 100%;
+    box-sizing: border-box;
+    .branding{
+      font-size: 1.2rem;
+    }
+    .brand-name{
+      display: block;
+      font-size: 1rem;
+    }
+    .app-icon{
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .user{
+      button{
+        width: 4rem;
+        padding: 0.6rem 0.4rem;
+        font-size: 0.7rem;
+      }
+      .user-pic{
+        display: none;
+      }
+      .mode{
+        margin: auto 0.3rem;
+        padding:0.3rem;
+        font-size: 1.4rem;
+      }
+    }
+  }
+  
+}
 @include respond-to (tabSmall) {
   .parent{
     width: 100%;

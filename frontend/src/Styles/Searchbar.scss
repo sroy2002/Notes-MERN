@@ -80,6 +80,24 @@
     }
   }
 }
+@include respond-to(tabMedium){
+  .container{
+    width: 19rem;
+    margin: 0.5rem;
+    input{
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem 0.2rem 1.2rem;
+    }
+    div{
+      padding-left:  0.1rem;
+      // padding-right: 0.4rem;
+    }
+    .search-icon{
+      font-size: 1rem;
+      margin: 0.27rem;
+    }
+  }
+}
 @include respond-to(tab){
   .container{
     width: 20rem;

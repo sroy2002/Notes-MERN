@@ -19,24 +19,6 @@ body {
   background-color: $bg-color-light;
   background-image: none; /* No pattern */
 }
-// body {
-//   background-color: $bg-color-light;
-//   margin: 0rem;
-//   background-image: radial-gradient(
-//     #ababab 1px,
-//     transparent 1px
-//   ); /* Dot color and size */
-//   background-size: 20px 20px; /* Distance between dots */
-//   width: 100%;
-//   height: 100vh; /* Adjust as needed */
-// }
-
-// .blank-bg {
-//   body {
-//     background-color: $bg-color-light;
-//     margin: 0rem;
-//   }
-// }
 
 .sub-container {
   display: grid;
@@ -48,12 +30,13 @@ body {
   .empty-state {
     grid-column: 1 / -1; // Span all columns
     grid-row: 1; // Place it in the first row
-    display: flex;
+    // display: flex;
     align-items: center; // Center items vertically
     justify-content: center; // Center items horizontally
     flex-direction: column; // Stack items vertically
     height: 100%; // Ensure it takes full height
     text-align: center; // Center text inside
+    box-sizing: border-box;
   }
 }
 .wrapper {
@@ -103,7 +86,8 @@ body {
   }
 }
 .modal-styles {
-  width: 40%;
+  width: 25%;
+  height: auto;
   max-height: auto;
   background-color: white;
   margin: 2rem auto;
@@ -131,7 +115,7 @@ body {
   }
   .modal-styles {
     height: auto;
-    min-width: 60%;
+    min-width: 50%;
     padding: 0.2rem 0.5rem;
   }
 }
@@ -157,6 +141,35 @@ body {
   .modal-styles {
     height: auto;
     min-width: 70%;
+    padding: 0.2rem 0.5rem;
+  }
+}
+@include respond-to(tabMedium) {
+  .wrapper {
+    .panel-div {
+      &.openWidth {
+        min-width: 30%;
+      }
+    }
+    .sub-container {
+      box-sizing: border-box;
+      grid-template-columns: repeat(2, 1fr);
+      padding-left: 0rem;
+      padding-right: 0.5rem;
+      margin: 2rem 1rem;
+      grid-auto-rows: minmax(100px, 150px);
+    }
+  }
+  .create {
+    button {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1rem;
+    }
+  }
+  .modal-styles {
+    height: auto;
+    min-width: 50%;
     padding: 0.2rem 0.5rem;
   }
 }
@@ -214,7 +227,7 @@ body {
   }
   .modal-styles {
     height: auto;
-    min-width: 50%;
+    min-width: 30%;
     padding: 0.2rem 0.5rem;
   }
 }
