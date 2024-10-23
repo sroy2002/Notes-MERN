@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, transform } from "framer-motion";
 import Modal from "react-modal";
 import { BiSolidPencil } from "react-icons/bi";
 import "../Styles/Home.scss";
@@ -19,7 +19,7 @@ const Home = () => {
   const [notes, setNotes] = useState([]);
   const [panel, setPanel] = useState(false);
   const [pinnedCount, setPinnedCount] = useState(0);
-
+  const [btnTrig, setBtnTrig] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchError, setSearchError] = useState(false);
   const [openModal, setOpenModal] = useState({
@@ -27,11 +27,58 @@ const Home = () => {
     type: "add",
     data: null,
   });
+  const triggerRef = useRef(null);
 
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.8 },
+  // const modalVariants = {
+  //   hidden: { opacity: 0, scale: 0.5 },
+  //   visible: {
+  //     opacity: 1,
+  //     scale: 1,
+  //     transition: {
+  //       duration: 0.4,
+  //       ease: [0.43, 0, 0.58, 1],
+  //       delay: 0.2,
+  //     },
+  //   },
+  //   exit: {
+  //     opacity: 0,
+  //     scale: 0.8,
+  //     transition: {
+  //       duration: 0.4,
+  //       ease: [0.42, 0, 0.58, 1],
+  //     },
+  //   },
+  // };
+
+  const backdropVariants = {
+    hidden: (btnTrig) => ({
+      opacity: 0,
+      clipPath: `circle(0px at ${btnTrig?.left || "50%"} ${
+        btnTrig?.top || "50%"
+      })`,
+      transition: {
+        duration: 0.5,
+      },
+    }),
+    visible: (btnTrig) => ({
+      opacity: 1,
+      clipPath: `circle(2000px at ${btnTrig?.left || "50%"} ${
+        btnTrig?.top || "50%"
+      })`,
+      transition: {
+        duration: 0.6,
+        ease: [0.42, 0, 0.58, 1], // easeInOut
+      },
+    }),
+    exit: (btnTrig) => ({
+      opacity: 0,
+      clipPath: `circle(0px at ${btnTrig?.left || "50%"} ${
+        btnTrig?.top || "50%"
+      })`,
+      transition: {
+        duration: 0.5,
+      },
+    }),
   };
 
   useEffect(() => {
@@ -43,11 +90,16 @@ const Home = () => {
       document.body.classList.remove("blank-background");
     }
 
+    if (triggerRef.current && openModal.isShown) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setBtnTrig(rect);
+    }
+
     // Cleanup on component unmount
     return () => {
       document.body.classList.remove("pattern-background", "blank-background");
     };
-  }, [searchError, notes]);
+  }, [searchError, notes, openModal.isShown]);
 
   const handlePanel = () => {
     setPanel(!panel);
@@ -257,51 +309,66 @@ const Home = () => {
       </div>
       <div className="create">
         <motion.button
-          onClick={() => {
+          ref={triggerRef}
+          onClick={(e) => {
+            const buttonRect = e.target.getBoundingClientRect();
+            setBtnTrig({
+              left: `${buttonRect.left + buttonRect.width / 2}px`, // Center of the button
+              top: `${buttonRect.top + buttonRect.height / 2}px`,   // Center of the button
+              width: buttonRect.width,
+              height: buttonRect.height,
+            });
             setOpenModal({ isShown: true, type: "add", data: null });
           }}
           whileHover={{
-            scale: 1.2, // Slightly increase the size on hover
-            boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)", // Add shadow on hover
+            scale: 1.2, 
+            boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)", 
           }}
-          whileTap={{ scale: 0.8 }} // Slightly shrink on tap
-          // initial={{ opacity: 0 }} // Initial opacity for a smooth appearance
-          // animate={{ opacity: 1 }} // Animate to full opacity
-          transition={{ duration: 0.01 }} // Set transition duration
+          whileTap={{ scale: 0.8 }} 
+          transition={{ duration: 0.01 }} 
         >
           <BiSolidPencil />
         </motion.button>
       </div>
-      <Modal
-        isOpen={openModal.isShown}
-        onRequestClose={() => {}}
-        style={{
-          overlay: {
-            backgroundColor: "rgba(0,0,0,0.3)",
-          },
-        }}
-        contentLabel=""
-        className="modal-styles"
-      >
-        <motion.div
-          variants={modalVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          transition={{ duration: 0.2 }}
-        >
-          <Create
-            fetchGuestNotes={fetchGuestNotes}
-            fetchNotes={fetchNotes}
-            data={openModal.data}
-            type={openModal.type}
-            onEdit={updateNote}
-            onClose={() => {
-              setOpenModal({ isShown: false, type: "add", data: null });
-            }}
-          />
-        </motion.div>
-      </Modal>
+
+      <AnimatePresence>
+        {openModal.isShown && (
+          <>
+            <motion.div
+              custom={btnTrig}
+              variants={backdropVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="backdrop"
+            >
+              <motion.Modal
+                isOpen={openModal.isShown}
+                onRequestClose={() => {}}
+                style={{
+                  overlay: {
+                    backgroundColor: "rgba(0,0,0,0.3)",
+                  },
+                }}
+                contentLabel="Create or Edit Note"
+                className="modal-styles"
+              >
+                <Create
+                  fetchGuestNotes={fetchGuestNotes}
+                  fetchNotes={fetchNotes}
+                  data={openModal.data}
+                  type={openModal.type}
+                  onEdit={updateNote}
+                  onClose={() => {
+                    setOpenModal({ isShown: false, type: "add", data: null });
+                    setBtnTrig(null);
+                  }}
+                />
+              </motion.Modal>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

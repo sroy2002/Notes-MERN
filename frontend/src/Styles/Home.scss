@@ -85,6 +85,17 @@ body {
     // }
   }
 }
+.backdrop{
+  position:fixed;
+  background-color:rgba(0,0,0,0.3);
+  top:0;
+  left:0;
+  width: 100vw; /* Full width */
+  height: 100vh; /* Full height */
+  // transform:translate(-50%,-50%);
+  // z-index:10;
+}
+
 .modal-styles {
   width: 25%;
   height: auto;
@@ -93,6 +104,8 @@ body {
   margin: 2rem auto;
   padding: 0.2rem 1rem;
   border-radius: 0.8rem;
+  position: relative;
+  z-index: 100;
 }
 @include respond-to(mobile) {
   .wrapper {
