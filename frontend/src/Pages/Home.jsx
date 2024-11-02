@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, transform } from "framer-motion";
-import Modal from "react-modal";
 import { BiSolidPencil } from "react-icons/bi";
 import "../Styles/Home.scss";
 import Navbar from "../Components/Navbar";
@@ -29,27 +28,19 @@ const Home = () => {
   });
   const triggerRef = useRef(null);
 
-  // const modalVariants = {
-  //   hidden: { opacity: 0, scale: 0.5 },
-  //   visible: {
-  //     opacity: 1,
-  //     scale: 1,
-  //     transition: {
-  //       duration: 0.4,
-  //       ease: [0.43, 0, 0.58, 1],
-  //       delay: 0.2,
-  //     },
-  //   },
-  //   exit: {
-  //     opacity: 0,
-  //     scale: 0.8,
-  //     transition: {
-  //       duration: 0.4,
-  //       ease: [0.42, 0, 0.58, 1],
-  //     },
-  //   },
-  // };
-
+  const modalVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: [0.42, 0, 0.58, 1] },
+    },
+    exit: {
+      opacity: 0,
+      y: 20,
+      transition: { duration: 0.3 },
+    },
+  };
   const backdropVariants = {
     hidden: (btnTrig) => ({
       opacity: 0,
@@ -314,18 +305,18 @@ const Home = () => {
             const buttonRect = e.target.getBoundingClientRect();
             setBtnTrig({
               left: `${buttonRect.left + buttonRect.width / 2}px`, // Center of the button
-              top: `${buttonRect.top + buttonRect.height / 2}px`,   // Center of the button
+              top: `${buttonRect.top + buttonRect.height / 2}px`, // Center of the button
               width: buttonRect.width,
               height: buttonRect.height,
             });
             setOpenModal({ isShown: true, type: "add", data: null });
           }}
           whileHover={{
-            scale: 1.2, 
-            boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)", 
+            scale: 1.2,
+            boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)",
           }}
-          whileTap={{ scale: 0.8 }} 
-          transition={{ duration: 0.01 }} 
+          whileTap={{ scale: 0.8 }}
+          transition={{ duration: 0.01 }}
         >
           <BiSolidPencil />
         </motion.button>
@@ -341,18 +332,33 @@ const Home = () => {
               animate="visible"
               exit="exit"
               className="backdrop"
+              onClick={() => {
+                setOpenModal({ isShown: false, type: "add", data: null });
+                setBtnTrig(null);
+              }}
             >
-              <motion.Modal
-                isOpen={openModal.isShown}
-                onRequestClose={() => {}}
-                style={{
-                  overlay: {
-                    backgroundColor: "rgba(0,0,0,0.3)",
-                  },
-                }}
-                contentLabel="Create or Edit Note"
-                className="modal-styles"
+              <motion.div
+                className="modal-wrapper"
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                onClick={(e) => e.stopPropagation()}
               >
+                {/* <Modal
+                  shouldCloseOnOverlayClick={true}
+                  // isOpen={openModal.isShown}
+                  onRequestClose={() => {
+                    setOpenModal({ isShown: false, type: "add", data: null });
+                    setBtnTrig(null);
+                  }}
+                  style={{
+                    overlay: {
+                      backgroundColor: "rgba(0,0,0,0.3)",
+                    },
+                  }}
+                  className="modal-styles"
+                > */}
                 <Create
                   fetchGuestNotes={fetchGuestNotes}
                   fetchNotes={fetchNotes}
@@ -364,7 +370,8 @@ const Home = () => {
                     setBtnTrig(null);
                   }}
                 />
-              </motion.Modal>
+                {/* </Modal> */}
+              </motion.div>
             </motion.div>
           </>
         )}
