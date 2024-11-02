@@ -44,18 +44,14 @@ const Home = () => {
   const backdropVariants = {
     hidden: (btnTrig) => ({
       opacity: 0,
-      clipPath: `circle(0px at ${btnTrig?.left || "50%"} ${
-        btnTrig?.top || "50%"
-      })`,
+      clipPath: `circle(30px at ${btnTrig?.left || 50}px ${btnTrig?.top || 50}px)`,
       transition: {
         duration: 0.5,
       },
     }),
     visible: (btnTrig) => ({
       opacity: 1,
-      clipPath: `circle(2000px at ${btnTrig?.left || "50%"} ${
-        btnTrig?.top || "50%"
-      })`,
+      clipPath: `circle(150% at ${btnTrig?.left || 50}px ${btnTrig?.top || 50}px)`,
       transition: {
         duration: 0.6,
         ease: [0.42, 0, 0.58, 1], // easeInOut
@@ -63,9 +59,7 @@ const Home = () => {
     }),
     exit: (btnTrig) => ({
       opacity: 0,
-      clipPath: `circle(0px at ${btnTrig?.left || "50%"} ${
-        btnTrig?.top || "50%"
-      })`,
+      clipPath: `circle(30px at ${btnTrig?.left || 50}px ${btnTrig?.top || 50}px)`,
       transition: {
         duration: 0.5,
       },
@@ -302,10 +296,10 @@ const Home = () => {
         <motion.button
           ref={triggerRef}
           onClick={(e) => {
-            const buttonRect = e.target.getBoundingClientRect();
+            const buttonRect = e.currentTarget.getBoundingClientRect();
             setBtnTrig({
-              left: `${buttonRect.left + buttonRect.width / 2}px`, // Center of the button
-              top: `${buttonRect.top + buttonRect.height / 2}px`, // Center of the button
+              left: `${buttonRect.left + buttonRect.width / 2}`, // Center of the button
+              top: `${buttonRect.top + buttonRect.height / 2}`, // Center of the button
               width: buttonRect.width,
               height: buttonRect.height,
             });
@@ -345,20 +339,6 @@ const Home = () => {
                 exit="exit"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* <Modal
-                  shouldCloseOnOverlayClick={true}
-                  // isOpen={openModal.isShown}
-                  onRequestClose={() => {
-                    setOpenModal({ isShown: false, type: "add", data: null });
-                    setBtnTrig(null);
-                  }}
-                  style={{
-                    overlay: {
-                      backgroundColor: "rgba(0,0,0,0.3)",
-                    },
-                  }}
-                  className="modal-styles"
-                > */}
                 <Create
                   fetchGuestNotes={fetchGuestNotes}
                   fetchNotes={fetchNotes}
@@ -370,7 +350,6 @@ const Home = () => {
                     setBtnTrig(null);
                   }}
                 />
-                {/* </Modal> */}
               </motion.div>
             </motion.div>
           </>

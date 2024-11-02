@@ -191,6 +191,35 @@ body {
     padding: 0.2rem 0.5rem;
   }
 }
+@include respond-to(tabMedium) {
+  .wrapper {
+    .panel-div {
+      &.openWidth {
+        min-width: 30%;
+      }
+    }
+    .sub-container {
+      box-sizing: border-box;
+      grid-template-columns: repeat(2, 1fr);
+      padding-left: 0rem;
+      padding-right: 0.5rem;
+      margin: 2rem 1rem;
+      grid-auto-rows: minmax(100px, 150px);
+    }
+  }
+  .create {
+    button {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1rem;
+    }
+  }
+  .modal-wrapper {
+    height: auto;
+    min-width: 50%;
+    padding: 0.2rem 0.5rem;
+  }
+}
 @include respond-to(tab) {
   .wrapper {
     .panel-div {

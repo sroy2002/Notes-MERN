@@ -146,6 +146,28 @@
     }
   }
 }
+@include respond-to(tabMedium) {
+  .modal-parent {
+    .label-box {
+      font-size: 0.6rem;
+    }
+    .text-area {
+      &.title {
+        font-size: 0.9rem;
+        padding: 0.8rem 1rem;
+      }
+      &.content {
+        font-size: 0.75rem;
+        padding: 1rem;
+      }
+    }
+    button {
+      padding: 0.4rem 0.8rem;
+      margin: 1rem 0rem 0.7rem 0rem;
+      font-size: 0.8rem;
+    }
+  }
+}
 @include respond-to(laptop) {
   .modal-parent {
     .label-box {
