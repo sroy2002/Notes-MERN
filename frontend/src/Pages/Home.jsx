@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, transform } from "framer-motion";
+import { motion, AnimatePresence} from "framer-motion";
 import { BiSolidPencil } from "react-icons/bi";
 import "../Styles/Home.scss";
 import Navbar from "../Components/Navbar";
@@ -26,6 +26,7 @@ const Home = () => {
     type: "add",
     data: null,
   });
+
   const triggerRef = useRef(null);
 
   const modalVariants = {
@@ -130,11 +131,17 @@ const Home = () => {
 
   useEffect(() => {
     const fetchUserNotes = async () => {
-      if (isAuthenticated) {
-        await fetchNotes();
-      } else {
-        fetchGuestNotes();
+      try{
+        if (isAuthenticated) {
+          await fetchNotes();
+        } else {
+          fetchGuestNotes();
+        }
       }
+      catch (error){
+          console.log("Error fetching notes: ", error);
+      }
+      
     };
     fetchUserNotes();
   }, [isAuthenticated]);
@@ -247,7 +254,7 @@ const Home = () => {
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
         </div>
-
+       
         <div className="sub-container">
           {notes.length ? (
             notes.map(
@@ -291,6 +298,7 @@ const Home = () => {
             </div>
           )}
         </div>
+       
       </div>
       <div className="create">
         <motion.button

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import appicon from "../assets/note.png";
 import Search from "./Search";
@@ -18,7 +19,24 @@ const Navbar = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLight, setIsLight] = useState(true);
+  const [profileClicked, setProfileClicked] = useState(false);
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    setProfileClicked(true);
+    navigate("/profile"); // Navigate programmatically
+  };
+
+  // Reset search bar visibility on route change
+  useEffect(() => {
+    if (location.pathname === "/profile") {
+      setProfileClicked(true);
+    } else {
+      setProfileClicked(false); // Show search bar on other pages
+    }
+  }, [location.pathname]);
 
   const handleLight = () => {
     setIsLight(!isLight);
@@ -93,17 +111,16 @@ const Navbar = ({
         <img src={appicon} alt="app-icon" className="app-icon" />
         <p className="poppins-semibold brand-name">Note.It</p>
       </div>
-      {/* <div className="list">
-        <p></p>
-      </div> */}
-      <Search
-        value={searchQuery}
-        onChange={({ target }) => {
-          setSearchQuery(target.value);
-        }}
-        onClearSearch={onClearSearch}
-        handleSearch={handleSearch}
-      />
+      {!profileClicked && (
+        <Search
+          value={searchQuery}
+          onChange={({ target }) => {
+            setSearchQuery(target.value);
+          }}
+          onClearSearch={onClearSearch}
+          handleSearch={handleSearch}
+        />
+      )}
       <div className="user">
         <div
           className={`mode ${isLight ? "" : "rotate"}`}
@@ -112,18 +129,22 @@ const Navbar = ({
           {isLight ? <IoMoonOutline /> : <IoSunnyOutline />}
         </div>
         {isAuthenticated && (
-          <div className="user-pic">
-            <img src={user.picture} alt={user.name} />
+          <div className="user-pic" onClick={handleProfileClick}>
+            <img
+              src={user.picture}
+              
+              alt={user.name}
+            />
           </div>
         )}
         {isAuthenticated ? (
           <motion.button
             whileHover={{
-            scale: 1.1, 
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)", 
+              scale: 1.1,
+              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)",
             }}
-            whileTap={{ scale: 0.8 }} 
-            transition={{ duration: 0.01 }} 
+            whileTap={{ scale: 0.8 }}
+            transition={{ duration: 0.01 }}
             className="poppins-medium"
             onClick={() =>
               logout({ logoutParams: { returnTo: window.location.origin } })
@@ -134,11 +155,11 @@ const Navbar = ({
         ) : (
           <motion.button
             whileHover={{
-              scale: 1.1, 
-              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)", 
+              scale: 1.1,
+              boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)",
             }}
-            whileTap={{ scale: 0.8 }} 
-            transition={{ duration: 0.01 }} 
+            whileTap={{ scale: 0.8 }}
+            transition={{ duration: 0.01 }}
             className="poppins-medium login-btn"
             onClick={() => loginWithRedirect()}
           >
