@@ -1,4 +1,5 @@
-@import "variables";
+@import 'variables';
+
 @import '_mixin';
 @mixin flex($par1){
     display: flex;

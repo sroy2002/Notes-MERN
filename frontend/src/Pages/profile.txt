@@ -50,16 +50,40 @@ const Profile = () => {
       <div className="title">
         <h1>My Profile</h1>
       </div>
+      {/* <form className="form-body">
+        <div className="profile-form">
+          <div className="user_name">
+            <label>First Name: </label>
+            <input type="text" />
+            <label>Last Name: </label>
+            <input type="text" />
+          </div>
+          <div className="username">
+            <label>Username: </label>
+            <input type="text" />
+          </div>
+          <div className="mail">
+            <label>Email Id: </label>
+            <input type="email" />
+          </div>
+          <div className="location">
+            <label>City: </label>
+            <input type="text" />
+            <label>Country: </label>
+            <input type="text" />
+          </div>
+        </div>
+        <button type="submit">Save</button>
+        <button>Cancel</button>
+      </form> */}
       <form className="profile-form">
-        <div className="naming">
-          <div className="form-group">
-            <label>First Name</label>
-            <input type="text" placeholder="Enter First Name" />
-          </div>
-          <div className="form-group">
-            <label>Last Name</label>
-            <input type="text" placeholder="Enter Last Name" />
-          </div>
+        <div className="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Enter First Name" />
+        </div>
+        <div className="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Enter Last Name" />
         </div>
         <div className="form-group">
           <label>Username</label>
@@ -69,22 +93,18 @@ const Profile = () => {
           <label>Email</label>
           <input type="email" placeholder="Enter Email" />
         </div>
-        <div className="location">
-          <div className="form-group">
-            <label>City</label>
-            <input type="text" placeholder="Enter City" />
-          </div>
-          <div className="form-group">
-            <label>Country</label>
-            <input type="text" placeholder="Enter Country" />
-          </div>
+        <div className="form-group">
+          <label>City</label>
+          <input type="text" placeholder="Enter City" />
         </div>
-        <div className="btn">
-          <button type="submit" className="btn-save">
-            Save Changes
-          </button>
-          <button className="btn-cancel">Cancel</button>
+        <div className="form-group">
+          <label>Country</label>
+          <input type="text" placeholder="Enter Country" />
         </div>
+        <button type="submit" className="btn-save">
+          Save
+        </button>
+        <button className="btn-cancel">Cancel</button>
       </form>
     </div>
   );

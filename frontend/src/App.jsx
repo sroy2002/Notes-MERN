@@ -2,15 +2,18 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home.jsx";
 import Profile from "./Pages/Profile.jsx";
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import "./Styles/App.scss";
 function App() {
   return (
+    <div className="my-app">
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
+    </div>
   );
 }
 

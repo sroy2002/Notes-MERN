@@ -24,15 +24,12 @@ body {
     justify-content: center;
     .img{
         position: relative;
-        border-color: white;
-        border-width: 10px;
         bottom: 4rem;
         margin-right: 1.5rem;
         cursor: pointer;
        
     }
   img {
-   
     height: 10rem;
     width: 10rem;
     border-radius: 100%;
@@ -73,44 +70,70 @@ body {
   justify-content: center;
 }
 
+// .profile-form{
+//   margin: 0rem 16rem;
+//   display: flex;
+//   flex-direction: column;
+//   background-color: white;
+//   border-radius: 1rem;
+//   padding-left: 1rem;
+//   label{
+//     margin: 0.5rem;
+//     font-size: 1rem;
+//   }
+//   .user_name,.location {
+//     margin: 1.5rem 0rem;
+//     input{
+//       width: 25%;
+//     }
+//   }
+//   .username, .mail{
+//     margin: 1.5rem 0rem;
+//   }
+//   input{
+//     background:transparent;
+//     border: 1px black solid;
+//     border-radius: 5px; 
+//     width: 70%;
+//     padding: 0.5rem 0.6rem;
+//   }
+// }
+
 .profile-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   margin-top: 30px;
-  padding: 0px 30rem;
+  padding: 0px 20rem;
   .form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: 100%;
+
     label {
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 16px;
       color: #333;
     }
 
     input {
       padding: 10px;
-      border-radius: 0.6rem;
+      border-radius: 5px;
       border: 1px solid #ccc;
       font-size: 14px;
       width: 100%;
       box-sizing: border-box;
     }
   }
-.btn{
-  display: flex;
-  gap:1rem;
-}
+
   .btn-save, .btn-cancel {
-    background-color: #91ff5e;
+    background-color: #007bff;
     color: white;
     padding: 12px;
     border: none;
-    border-radius: 0.6rem;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 16px;
     width: 100%;
     margin-top: 20px;
     transition: background-color 0.3s;
@@ -130,9 +153,3 @@ body {
 //     grid-template-columns: 1fr;
 //   }
 // }
-
-.naming,.location{
-  display: flex;
-  width: full;
-  gap:1rem;
-}
