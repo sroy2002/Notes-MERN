@@ -61,9 +61,15 @@ const Profile = () => {
             <input type="text" placeholder="Enter Last Name" />
           </div>
         </div>
-        <div className="form-group">
-          <label>Username</label>
-          <input type="text" placeholder="Enter Username" />
+        <div className="privacy">
+          <div className="form-group">
+            <label>Username</label>
+            <input type="text" placeholder="Enter Username" />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="text" placeholder="Enter Password" />
+          </div>
         </div>
         <div className="form-group">
           <label>Email</label>
