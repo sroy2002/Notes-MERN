@@ -77,7 +77,7 @@ const Notecard = ({
         <div className="upper">
           <div className="card-heading">
             <p className="poppins-semibold">{title}</p>
-            <span>{formattedDate}</span>
+            <span className="poppins-regular">{formattedDate}</span>
           </div>
           <div>
             {pinned ? (
@@ -97,7 +97,7 @@ const Notecard = ({
             )}
           </div>
         </div>
-        <p className="card-content">{content?.slice(0, 60)}</p>
+        <p className="card-content poppins-regular">{content?.slice(0, 60)}</p>
         <div className="bottom">
           <div className="note-tags">
             {tags?.length > 0 &&

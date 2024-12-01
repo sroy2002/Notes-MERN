@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { BiSolidPencil } from "react-icons/bi";
 import "../Styles/Home.scss";
 import Navbar from "../Components/Navbar";
@@ -14,7 +14,7 @@ import AddNote from "../Components/AddNote";
 // import { locals } from "../../../backend";
 
 const Home = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [notes, setNotes] = useState([]);
   const [panel, setPanel] = useState(false);
   const [pinnedCount, setPinnedCount] = useState(0);
@@ -45,14 +45,18 @@ const Home = () => {
   const backdropVariants = {
     hidden: (btnTrig) => ({
       opacity: 0,
-      clipPath: `circle(30px at ${btnTrig?.left || 50}px ${btnTrig?.top || 50}px)`,
+      clipPath: `circle(30px at ${btnTrig?.left || 50}px ${
+        btnTrig?.top || 50
+      }px)`,
       transition: {
         duration: 0.5,
       },
     }),
     visible: (btnTrig) => ({
       opacity: 1,
-      clipPath: `circle(150% at ${btnTrig?.left || 50}px ${btnTrig?.top || 50}px)`,
+      clipPath: `circle(150% at ${btnTrig?.left || 50}px ${
+        btnTrig?.top || 50
+      }px)`,
       transition: {
         duration: 0.6,
         ease: [0.42, 0, 0.58, 1], // easeInOut
@@ -60,7 +64,9 @@ const Home = () => {
     }),
     exit: (btnTrig) => ({
       opacity: 0,
-      clipPath: `circle(30px at ${btnTrig?.left || 50}px ${btnTrig?.top || 50}px)`,
+      clipPath: `circle(30px at ${btnTrig?.left || 50}px ${
+        btnTrig?.top || 50
+      }px)`,
       transition: {
         duration: 0.5,
       },
@@ -129,20 +135,59 @@ const Home = () => {
     setNotes(guestNotes);
   };
 
+  const createUser = async () => {
+    if (!user) return;
+
+    try {
+      const token = await getAccessTokenSilently();
+      const {
+        sub: auth0Id,
+        nickname: username,
+        given_name: firstName,
+        family_name: lastName,
+        email,
+        picture: profileImage,
+      } = user;
+
+      const userData = {
+        auth0Id,
+        username,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        email,
+        country: null, // Optional fields can be updated later
+        city: null,
+        profileImage,
+      };
+
+      await axios.post("http://localhost:8000/register", userData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("User created successfully");
+    } catch (error) {
+      console.error("Error creating user: ", error);
+    }
+  };
+
+  const fetchUserNotes = async () => {
+    try {
+      if (isAuthenticated) {
+        await createUser();
+        // Add logic to fetch authenticated user notes here
+        await fetchNotes()
+      } else {
+        // Logic for fetching guest notes
+        fetchGuestNotes();
+      }
+    } catch (error) {
+      console.error("Error fetching notes: ", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchUserNotes = async () => {
-      try{
-        if (isAuthenticated) {
-          await fetchNotes();
-        } else {
-          fetchGuestNotes();
-        }
-      }
-      catch (error){
-          console.log("Error fetching notes: ", error);
-      }
-      
-    };
     fetchUserNotes();
   }, [isAuthenticated]);
 
@@ -254,7 +299,7 @@ const Home = () => {
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>
           <SidePannel panelOpen={panel} />
         </div>
-       
+
         <div className="sub-container">
           {notes.length ? (
             notes.map(
@@ -298,7 +343,6 @@ const Home = () => {
             </div>
           )}
         </div>
-       
       </div>
       <div className="create">
         <motion.button

@@ -7,6 +7,7 @@ const {
 } = require("mongoose");
 mongoose.connect(config.connectionString);
 const Note = require("./models/note.model");
+const User = require("./models/user.model");
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -30,6 +31,77 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ data: "hello" });
 });
+
+//storing user information
+app.post("/register", checkJwt, async (req, res) => {
+  const {
+    auth0Id,
+    username,
+    firstName,
+    lastName,
+    email,
+    country,
+    city,
+    profileImage,
+  } = req.body;
+  try {
+    let user = await User.findOne({ auth0Id });
+    if (!user) {
+      user = new User({
+        auth0Id,
+        username,
+        firstName,
+        lastName,
+        email,
+        country,
+        city,
+        profileImage,
+      });
+      await user.save();
+      return res
+        .status(201)
+        .json({ message: "User created successfully", user });
+    }
+    res.status(200).json({ message: "User already exists", user });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Internal Server Error",
+    });
+  }
+});
+
+//fetch user data in profile page
+app.get("/user/:auth0Id", async (req, res) => {
+  const { auth0Id } = req.params;
+  try {
+    const user = await User.findOne({ auth0Id });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.put("/user/:auth0Id", async (req, res) => {
+  const { auth0Id } = req.params;
+  const {profileImage,...otherFields} = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate({ auth0Id }, { profileImage, ...otherFields }, {
+      new: true,
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 //fetch notes for the autheticated user
 app.get("/notes", checkJwt, async (req, res) => {
   try {
@@ -168,7 +240,7 @@ app.put("/update-pin/:id/pin", checkJwt, async (req, res) => {
 app.get("/search-notes/", checkJwt, async (req, res) => {
   const { query } = req.query;
   const user = req.auth.payload;
-  
+
   if (!user) {
     return res
       .status(401)
