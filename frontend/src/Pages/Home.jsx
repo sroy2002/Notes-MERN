@@ -104,7 +104,7 @@ const Home = () => {
     try {
       if (isAuthenticated) {
         const token = await getAccessTokenSilently();
-        const response = await axios.get("/notes", {
+        const response = await axios.get("/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -141,7 +141,7 @@ const Home = () => {
   const fetchUserNotes = async () => {
     try {
       if (isAuthenticated) {
-        await createUser();
+       
         // Add logic to fetch authenticated user notes here
         await fetchNotes()
       } else {
