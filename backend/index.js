@@ -38,7 +38,7 @@ app.use(
 
 
 //fetch notes for the autheticated user
-app.get("/", checkJwt, async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     const user = req.auth.payload; // get the authenticated user's info
     const notes = await Note.find({ userId: user.sub }).sort({
