@@ -37,45 +37,7 @@ app.get("/", (req, res) => {
   res.json({ data: "hello" });
 });
 
-//storing user information
-app.post("/register", checkJwt, async (req, res) => {
-  const {
-    auth0Id,
-    username,
-    firstName,
-    lastName,
-    email,
-    country,
-    city,
-    profileImage,
-  } = req.body;
-  try {
-    let user = await User.findOne({ auth0Id });
-    if (!user) {
-      user = new User({
-        auth0Id,
-        username,
-        firstName,
-        lastName,
-        email,
-        country,
-        city,
-        profileImage,
-      });
-      await user.save();
-      return res
-        .status(201)
-        .json({ message: "User created successfully", user });
-    }
-    res.status(200).json({ message: "User already exists", user });
-  } catch (error) {
-    console.error("Error registering user:", error);
-    return res.status(500).json({
-      error: true,
-      message: "Internal Server Error",
-    });
-  }
-});
+
 
 //fetch notes for the autheticated user
 app.get("/notes", checkJwt, async (req, res) => {

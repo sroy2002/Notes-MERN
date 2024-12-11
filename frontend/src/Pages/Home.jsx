@@ -136,42 +136,7 @@ const Home = () => {
     setNotes(guestNotes);
   };
 
-  const createUser = async () => {
-    if (!user) return;
 
-    try {
-      const token = await getAccessTokenSilently();
-      const {
-        sub: auth0Id,
-        nickname: username,
-        given_name: firstName,
-        family_name: lastName,
-        email,
-        picture: profileImage,
-      } = user;
-
-      const userData = {
-        auth0Id,
-        username,
-        firstName: firstName || null,
-        lastName: lastName || null,
-        email,
-        country: null, // Optional fields can be updated later
-        city: null,
-        profileImage,
-      };
-
-      await axios.post("http://localhost:8000/register", userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("User created successfully");
-    } catch (error) {
-      console.error("Error creating user: ", error);
-    }
-  };
 
   const fetchUserNotes = async () => {
     try {
