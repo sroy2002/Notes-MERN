@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')).render(
     domain="dev-2zvnt7b3vewhots2.us.auth0.com"
     clientId="g5DOHEUfgwJbDGg3PK6bh9Wi8MYDdBzv"
     authorizationParams={{
-      redirect_uri: window.location.origin,
+      redirect_uri: "https://notes-mern-nine.vercel.app",
       audience: "https://my-notes-app",
       scope: "openid profile email",
     }}

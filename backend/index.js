@@ -37,7 +37,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.redirect("https://dev-2zvnt7b3vewhots2.us.auth0.com/login");
+  res.json({ message: "API is running" });
 });
 
 //fetch notes for the autheticated user
