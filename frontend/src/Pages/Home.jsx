@@ -21,6 +21,7 @@ const Home = () => {
   const [btnTrig, setBtnTrig] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchError, setSearchError] = useState(false);
+  // const [profileImg, setProfileImg] = useState(null);
   const [openModal, setOpenModal] = useState({
     isShown: false,
     type: "add",
@@ -294,6 +295,8 @@ const Home = () => {
         fetchNotes={fetchNotes}
         fetchGuestNotes={fetchGuestNotes}
         setSearchError={setSearchError}
+        // profileImage={profileImg}
+        // setProfileImage = {setProfileImg}
       />
       <div className="wrapper">
         <div className={`${panel ? "openWidth" : "closeWidth"} panel-div`}>

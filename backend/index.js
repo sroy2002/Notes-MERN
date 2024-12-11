@@ -13,6 +13,7 @@ const cors = require("cors");
 const app = express();
 const { auth } = require("express-oauth2-jwt-bearer");
 
+
 //middleware
 const checkJwt = auth({
   audience: "https://my-notes-app",
@@ -22,9 +23,12 @@ const checkJwt = auth({
 
 app.use(express.json());
 
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173", // Allow frontend to access backend
+    // credentials: true, // Allow cookies to be sent with requests
+    // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
@@ -69,36 +73,6 @@ app.post("/register", checkJwt, async (req, res) => {
       error: true,
       message: "Internal Server Error",
     });
-  }
-});
-
-//fetch user data in profile page
-app.get("/user/:auth0Id", async (req, res) => {
-  const { auth0Id } = req.params;
-  try {
-    const user = await User.findOne({ auth0Id });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.put("/user/:auth0Id", async (req, res) => {
-  const { auth0Id } = req.params;
-  const {profileImage,...otherFields} = req.body;
-
-  try {
-    const user = await User.findOneAndUpdate({ auth0Id }, { profileImage, ...otherFields }, {
-      new: true,
-    });
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (error) {
-    console.error("Error updating user:", error);
-    res.status(500).json({ error: "Internal server error" });
   }
 });
 

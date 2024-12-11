@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import appicon from "../assets/note.png";
 import Search from "./Search";
@@ -21,22 +21,20 @@ const Navbar = ({
   const [isLight, setIsLight] = useState(true);
   const [profileClicked, setProfileClicked] = useState(false);
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
-  const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleProfileClick = () => {
     setProfileClicked(true);
-    navigate("/profile"); // Navigate programmatically
   };
 
   // Reset search bar visibility on route change
-  useEffect(() => {
-    if (location.pathname === "/profile") {
-      setProfileClicked(true);
-    } else {
-      setProfileClicked(false); // Show search bar on other pages
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname === "/profile") {
+  //     setProfileClicked(true);
+  //   } else {
+  //     setProfileClicked(false); // Show search bar on other pages
+  //   }
+  // }, [location.pathname]);
 
   const handleLight = () => {
     setIsLight(!isLight);
@@ -131,7 +129,7 @@ const Navbar = ({
         {isAuthenticated && (
           <div className="user-pic" onClick={handleProfileClick}>
             <img
-              src={user.picture}
+              src={ user.picture}
               
               alt={user.name}
             />
