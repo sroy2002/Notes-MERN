@@ -2,7 +2,7 @@
     "rewrites":[
         {
             "source":"/(.*)",
-            "destination":"/inedx.html"
+            "destination":"/index.html"
         }
     ]
 }

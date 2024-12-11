@@ -34,11 +34,13 @@ app.use(
 );
 
 
-
+app.get("/",(req,res)=>{
+  res.redirect("https://dev-2zvnt7b3vewhots2.us.auth0.com/login");
+});
 
 
 //fetch notes for the autheticated user
-app.get("/", async (req, res) => {
+app.get("/home", checkJwt,async (req, res) => {
   try {
     const user = req.auth.payload; // get the authenticated user's info
     const notes = await Note.find({ userId: user.sub }).sort({

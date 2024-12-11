@@ -104,7 +104,7 @@ const Home = () => {
     try {
       if (isAuthenticated) {
         const token = await getAccessTokenSilently();
-        const response = await axios.get("/", {
+        const response = await axios.get("/home", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
