@@ -7,7 +7,7 @@ const {
 } = require("mongoose");
 mongoose.connect(config.connectionString);
 const Note = require("./models/note.model");
-const User = require("./models/user.model");
+
 const express = require("express");
 const cors = require("cors");
 const app = express();
