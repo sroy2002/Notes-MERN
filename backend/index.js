@@ -26,7 +26,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin:["https://notes-mern-khaki.vercel.app/"],
+    origin:["https://notes-mern-nine.vercel.app/"],
     methods:["POST","GET","PUT","DELETE"],// Allow frontend to access backend
     credentials: true, // Allow cookies to be sent with requests
     // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
