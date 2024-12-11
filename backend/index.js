@@ -13,7 +13,6 @@ const cors = require("cors");
 const app = express();
 const { auth } = require("express-oauth2-jwt-bearer");
 
-
 //middleware
 const checkJwt = auth({
   audience: "https://my-notes-app",
@@ -23,24 +22,26 @@ const checkJwt = auth({
 
 app.use(express.json());
 
-
 app.use(
   cors({
-    origin:["https://notes-mern-nine.vercel.app"],
-    methods:["POST","GET","PUT","DELETE"],// Allow frontend to access backend
+    origin: [
+      "https://notes-mern-nine.vercel.app", // Your frontend URL
+      "http://localhost:3000", // Local frontend development
+      "http://localhost:5173", // If using Vite default port
+      "https://dev-2zvnt7b3vewhots2.us.auth0.com",
+    ], // Your Auth0 domain],
+    methods: ["POST", "GET", "PUT", "DELETE"], // Allow frontend to access backend
     credentials: true, // Allow cookies to be sent with requests
     // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
-
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.redirect("https://dev-2zvnt7b3vewhots2.us.auth0.com/u/login");
 });
 
-
 //fetch notes for the autheticated user
-app.get("/home", checkJwt,async (req, res) => {
+app.get("/home", checkJwt, async (req, res) => {
   try {
     const user = req.auth.payload; // get the authenticated user's info
     const notes = await Note.find({ userId: user.sub }).sort({
