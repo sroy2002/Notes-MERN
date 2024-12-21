@@ -25,9 +25,9 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "https://notes-mern-nine.vercel.app", // Your frontend URL
+      // "https://notes-mern-nine.vercel.app", // Your frontend URL
       "http://localhost:3000", // Local frontend development
-      "http://localhost:5173", // If using Vite default port
+      // "http://localhost:5173", // If using Vite default port
       "https://dev-2zvnt7b3vewhots2.us.auth0.com",
     ], // Your Auth0 domain],
     methods: ["POST", "GET", "PUT", "DELETE"], // Allow frontend to access backend
