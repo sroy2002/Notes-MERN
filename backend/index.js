@@ -1,38 +1,25 @@
-require("dotenv").config();
 //mongoDB connection
 const config = require("./config.json");
 const mongoose = require("mongoose");
 const {
   Types: { ObjectId },
 } = require("mongoose");
+require("dotenv").config();
+
+console.log(process.env.MONGO_URL);
 mongoose.connect(config.connectionString);
 const Note = require("./models/note.model");
 
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { auth } = require("express-oauth2-jwt-bearer");
 
-//middleware
-const checkJwt = auth({
-  audience: "https://my-notes-app",
-  issuerBaseURL: `https://dev-2zvnt7b3vewhots2.us.auth0.com/`,
-  tokenSigningAlg: "RS256",
-});
 
 app.use(express.json());
 
 app.use(
   cors({
-    origin: [
-      // "https://notes-mern-nine.vercel.app", // Your frontend URL
-      "http://localhost:3000", // Local frontend development
-      // "http://localhost:5173", // If using Vite default port
-      "https://dev-2zvnt7b3vewhots2.us.auth0.com",
-    ], // Your Auth0 domain],
-    methods: ["POST", "GET", "PUT", "DELETE"], // Allow frontend to access backend
-    credentials: true, // Allow cookies to be sent with requests
-    // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: ["http://localhost:5173"],
   })
 );
 
@@ -40,14 +27,13 @@ app.get("/", (req, res) => {
   res.json({ message: "API is running" });
 });
 
-//fetch notes for the autheticated user
-app.get("/home", checkJwt, async (req, res) => {
+//fetch notes
+app.get("/home", async (req, res) => {
   try {
-    const user = req.auth.payload; // get the authenticated user's info
-    const notes = await Note.find({ userId: user.sub }).sort({
+    const notes = await Note.find().sort({
       isPinned: -1,
       pinnedAt: -1,
-    }); //Fetch notes for this user
+    });
     res.json({ notes });
   } catch (error) {
     res.status(500).json({
@@ -57,9 +43,8 @@ app.get("/home", checkJwt, async (req, res) => {
   }
 });
 //add note api
-app.post("/add-note", checkJwt, async (req, res) => {
+app.post("/add-note", async (req, res) => {
   const { title, content, tags } = req.body;
-  const user = req.auth.payload;
 
   if (!title) {
     return res.status(400).json({
@@ -78,7 +63,6 @@ app.post("/add-note", checkJwt, async (req, res) => {
       title,
       content,
       tags: tags || [],
-      userId: user.sub, //save note with user's id
     });
     await newNote.save();
     return res.status(201).json({
@@ -87,6 +71,7 @@ app.post("/add-note", checkJwt, async (req, res) => {
       message: "Note added successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       error: true,
       message: "Internal Server Error",
@@ -95,11 +80,8 @@ app.post("/add-note", checkJwt, async (req, res) => {
 });
 
 //edit notes api
-app.put("/edit-note/:id", checkJwt, async (req, res) => {
+app.put("/edit-note/:id", async (req, res) => {
   const noteId = req.params.id;
-  // const {title, content, tags, isPinned} = req.body;
-  // const {user} = req.user;
-
   const updatedNote = req.body;
 
   try {
@@ -113,9 +95,7 @@ app.put("/edit-note/:id", checkJwt, async (req, res) => {
     note.title = updatedNote.title;
     note.content = updatedNote.content;
     note.tags = updatedNote.tags || [];
-    note.createdOn = new Date(); //update the timestamp
-
-    //save the updated note back to the database
+    note.createdOn = new Date();
     await note.save();
     res.status(200).json({ message: "Note updated successfully!", note });
   } catch (error) {
@@ -127,8 +107,6 @@ app.put("/edit-note/:id", checkJwt, async (req, res) => {
 app.delete("/delete-note/:id", async (req, res) => {
   try {
     const noteId = req.params.id;
-
-    //find the note by ID and delete it
     const result = await Note.findByIdAndDelete(noteId);
     if (!result) {
       return res.status(404).json({ message: "Note not found!" });
@@ -143,15 +121,14 @@ app.delete("/delete-note/:id", async (req, res) => {
 });
 
 //update pin status
-app.put("/update-pin/:id/pin", checkJwt, async (req, res) => {
+app.put("/update-pin/:id/pin", async (req, res) => {
   try {
-    const userId = req.auth.payload.id;
     const noteId = req.params.id;
     if (!ObjectId.isValid(noteId)) {
       return res.status(400).json({ message: "Invalid note ID" });
     }
     // Find all pinned notes for the user
-    const pinnedNotes = await Note.find({ userId: userId, isPinned: true });
+    const pinnedNotes = await Note.find({ isPinned: true });
 
     // Check if the user has already pinned 3 notes
     if (pinnedNotes.length >= 3) {
@@ -175,16 +152,8 @@ app.put("/update-pin/:id/pin", checkJwt, async (req, res) => {
 });
 
 // search notes api
-app.get("/search-notes/", checkJwt, async (req, res) => {
+app.get("/search-notes", async (req, res) => {
   const { query } = req.query;
-  const user = req.auth.payload;
-
-  if (!user) {
-    return res
-      .status(401)
-      .json({ error: true, message: "User not authenticated." });
-  }
-
   if (!query) {
     return res
       .status(400)
@@ -193,7 +162,6 @@ app.get("/search-notes/", checkJwt, async (req, res) => {
 
   try {
     const matchingNotes = await Note.find({
-      userId: user.sub,
       $or: [
         { title: { $regex: new RegExp(query, "i") } },
         { content: { $regex: new RegExp(query, "i") } },

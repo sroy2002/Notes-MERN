@@ -6,22 +6,20 @@ import Navbar from "../Components/Navbar";
 import Notecard from "../Components/Notecard";
 import SidePannel from "../Components/SidePannel";
 import axios from "../api";
-import { useAuth0 } from "@auth0/auth0-react";
+
 import { toast } from "react-toastify";
 import Create from "../Components/Create";
 import NotFound from "../Components/NotFound";
 import AddNote from "../Components/AddNote";
-// import { locals } from "../../../backend";
 
 const Home = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [notes, setNotes] = useState([]);
   const [panel, setPanel] = useState(false);
   const [pinnedCount, setPinnedCount] = useState(0);
   const [btnTrig, setBtnTrig] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchError, setSearchError] = useState(false);
-  // const [profileImg, setProfileImg] = useState(null);
+
   const [openModal, setOpenModal] = useState({
     isShown: false,
     type: "add",
@@ -102,52 +100,33 @@ const Home = () => {
 
   const fetchNotes = async () => {
     try {
-      if (isAuthenticated) {
-        const token = await getAccessTokenSilently();
-        const response = await axios.get("/home", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
 
-        const fetchedNotes = response.data.notes;
+      const response = await axios.get("/home");
 
-        //Separate pinned and unpinned notes
-        const pinnedNotes = fetchedNotes.filter((note) => note.isPinned);
-        const unpinnedNotes = fetchedNotes.filter((note) => !note.isPinned);
+      const fetchedNotes = response.data.notes;
+      //Separate pinned and unpinned notes
+      const pinnedNotes = fetchedNotes.filter((note) => note.isPinned);
+      const unpinnedNotes = fetchedNotes.filter((note) => !note.isPinned);
 
-        pinnedNotes.sort((a, b) => new Date(b.pinnedAt) - new Date(a.pinnedAt));
+      pinnedNotes.sort((a, b) => new Date(b.pinnedAt) - new Date(a.pinnedAt));
 
-        const combinedNotes = [...pinnedNotes, ...unpinnedNotes];
-        setNotes(combinedNotes);
-        setPinnedCount(pinnedNotes.length); // Update pinned count here
-      } else {
-        //if not authenticated, load notes from localstorage
-        const localNotes = JSON.parse(localStorage.getItem("notes")) || [];
-        setNotes(localNotes);
-      }
+      const combinedNotes = [...pinnedNotes, ...unpinnedNotes];
+      setNotes(combinedNotes);
+      setPinnedCount(pinnedNotes.length); // Update pinned count here
     } catch (error) {
       console.error("Error fetching notes: ", error);
     }
   };
 
-  const fetchGuestNotes = () => {
-    const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
-    setNotes(guestNotes);
-  };
+  // const fetchGuestNotes = () => {
+  //   const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
+  //   setNotes(guestNotes);
+  // };
 
-
-
-  const fetchUserNotes = async () => {
+const fetchUserNotes = async () => {
     try {
-      if (isAuthenticated) {
-       
-        // Add logic to fetch authenticated user notes here
-        await fetchNotes()
-      } else {
-        // Logic for fetching guest notes
-        fetchGuestNotes();
-      }
+      // Add logic to fetch authenticated user notes here
+      await fetchNotes();
     } catch (error) {
       console.error("Error fetching notes: ", error);
     }
@@ -155,41 +134,21 @@ const Home = () => {
 
   useEffect(() => {
     fetchUserNotes();
-  }, [isAuthenticated]);
+  });
 
   // function to edit notes
   const updateNote = async (updatedNote) => {
-    if (isAuthenticated) {
-      const token = await getAccessTokenSilently();
-      await axios.put(`/notes/${updatedNote._id}`, updatedNote, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } else {
-      const localNotes = JSON.parse(localStorage.getItem("notes")) || [];
-      const noteIndex = localNotes.findIndex(
-        (note) => note._id === updatedNote._id
-      );
-      if (noteIndex !== -1) {
-        localNotes[noteIndex] = updatedNote;
-        localStorage.setItem("notes", JSON.stringify(localNotes));
-      }
-    }
+    await axios.put(`/notes/${updatedNote._id}`, updatedNote);
     fetchNotes(); // refresh notes after editing
   };
 
   // function to delete notes
   const deleteNote = async (noteId) => {
     try {
-      const accessToken = await getAccessTokenSilently();
       const response = await fetch(
         `http://localhost:8000/delete-note/${noteId}`,
         {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${accessToken}`, //pass the token in the header
-          },
         }
       );
 
@@ -207,46 +166,23 @@ const Home = () => {
     }
   };
 
-  //Function to delete note from session storage for guest users
-  const deleteNoteForGuests = (noteId) => {
-    let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
-    // Log the notes and the noteId to be deleted
-    console.log("Notes before deletion:", notes);
-    console.log("Note to delete (ID):", noteId);
-    notes = notes.filter((note) => note.id !== noteId); //use unique id for filtering
-    console.log("Notes after deletion:", notes);
-    sessionStorage.setItem("guestNotes", JSON.stringify(notes));
-    console.log(
-      "Updated sessionStorage:",
-      sessionStorage.getItem("guestNotes")
-    );
-    toast.error("Note deleted!");
-    fetchGuestNotes();
-  };
-
   const onDelete = (noteId) => {
-    if (isAuthenticated) {
-      deleteNote(noteId);
-    } else {
-      console.log(noteId);
-      deleteNoteForGuests(noteId);
-    }
+    deleteNote(noteId);
   };
 
   // function to search for a note (authenticated users only)
   const onSearchNote = async (query) => {
     try {
-      const token = await getAccessTokenSilently();
       const response = await axios.get("/search-notes", {
         params: { query },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
+      console.log(response.data.notes);
       if (response.data && response.data.notes) {
         setIsSearch(true);
         setNotes(response.data.notes);
+        return response.data.notes;
       }
+      return [];
     } catch (error) {
       console.error("Error searching notes: ", error);
     }
@@ -258,7 +194,6 @@ const Home = () => {
         setNotes={setNotes}
         onSearchNote={onSearchNote}
         fetchNotes={fetchNotes}
-        fetchGuestNotes={fetchGuestNotes}
         setSearchError={setSearchError}
         // profileImage={profileImg}
         // setProfileImage = {setProfileImg}
@@ -285,11 +220,7 @@ const Home = () => {
                       setOpenModal({ isShown: true, type: "edit", data: note });
                     }}
                     onDelete={() => {
-                      if (isAuthenticated) {
-                        onDelete(note._id);
-                      } else {
-                        onDelete(note.id);
-                      }
+                      onDelete(note._id);
                     }}
                     fetchNotes={fetchNotes}
                     pinnedCount={pinnedCount} // Pass current pinned count
@@ -360,7 +291,7 @@ const Home = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <Create
-                  fetchGuestNotes={fetchGuestNotes}
+                
                   fetchNotes={fetchNotes}
                   data={openModal.data}
                   type={openModal.type}

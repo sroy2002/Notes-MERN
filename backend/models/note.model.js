@@ -23,10 +23,6 @@ const noteSchema = new Schema({
     type: Date, 
     default: null,// To track when the note was pinned
   },
-  userId: {
-    type: String,
-    required: true,
-  },
   createdOn: {
     type: Date,
     default: new Date().getTime(),

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { BsPinFill, BsPinAngle } from "react-icons/bs";
 import { MdCreate, MdDelete } from "react-icons/md";
 import "../Styles/Notecard.scss";
@@ -17,51 +17,40 @@ const Notecard = ({
   pinnedCount,
   setPinnedCount,
 }) => {
-  const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } =
-    useAuth0(); // Auth0 hook
+  // const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } =
+  //   useAuth0(); // Auth0 hook
   const [pinned, setIsPinned] = useState(isPinned);
 
   const onPinNote = async (noteid) => {
-    if (isAuthenticated) {
-      // Check if pinning limit is reached
-      if (!pinned && pinnedCount >= 3) {
-        toast.info("You can only pin up to 3 notes.");
-        return;
-      }
-      try {
-        const accessToken = await getAccessTokenSilently();
-        const response = await fetch(
-          `http://localhost:8000/update-pin/${noteid}/pin`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${accessToken}`, //pass the token in the header
-            },
-          }
-        );
-
-        //update local pinned state based on server response
-        if (response.status === 200) {
-          const newPinnedStatus = !pinned;
-          setIsPinned(newPinnedStatus);
-
-          // Update pinned count accordingly
-          if (newPinnedStatus) {
-            setPinnedCount(pinnedCount + 1);
-          } else {
-            setPinnedCount(pinnedCount - 1);
-          }
-          toast.success("Pin status updated!");
-          fetchNotes();
-        }
-      } catch (error) {
-        console.error("Error pinning the note: ", error);
-        toast.error("Failed to update pin status.");
-      }
-    } else {
-      toast.info("You need to sign up/login to pin your notes!");
-      loginWithRedirect();
+    if (!pinned && pinnedCount >= 3) {
+      toast.info("You can only pin up to 3 notes.");
       return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost:8000/update-pin/${noteid}/pin`,
+        {
+          method: "PUT",
+        }
+      );
+
+      //update local pinned state based on server response
+      if (response.status === 200) {
+        const newPinnedStatus = !pinned;
+        setIsPinned(newPinnedStatus);
+
+        // Update pinned count accordingly
+        if (newPinnedStatus) {
+          setPinnedCount(pinnedCount + 1);
+        } else {
+          setPinnedCount(pinnedCount - 1);
+        }
+        toast.success("Pin status updated!");
+        fetchNotes();
+      }
+    } catch (error) {
+      console.error("Error pinning the note: ", error);
+      toast.error("Failed to update pin status.");
     }
   };
 

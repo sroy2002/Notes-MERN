@@ -2,54 +2,31 @@ import React, { useState, useEffect } from "react";
 import "../Styles/Edit.scss";
 import TagInput from "./TagInput";
 import { IoMdClose } from "react-icons/io";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { toast } from "react-toastify";
 // import { locals } from "../../../backend";
 
-const Create = ({ fetchGuestNotes, fetchNotes, data, type, onClose }) => {
+const Create = ({ fetchNotes, data, type, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); // get user info and token
-
-  // Function to add a new note to localStorage (for unauthenticated users)
-
-  const addNoteToLocalStorage = () => {
-    const newNote = {
-      id: new Date().getTime(), //unique id for each note
-      title,
-      content,
-      tags,
-      createdOn: new Date(),
-      isPinned: false,
-    };
-
-    let notes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
-    notes.push(newNote);
-    sessionStorage.setItem("guestNotes", JSON.stringify(notes));
-    onClose();
-    fetchGuestNotes();
-  };
 
   // function to add new note
   const addNewNote = async () => {
     try {
-      const accessToken = await getAccessTokenSilently(); //get access token
       const noteData = {
         title,
         content,
         tags,
         date: new Date(),
         isPinned: false, // default to false
-        userId: user.sub, // fetch user ID fromAuth0 user object
       };
 
       const response = await fetch(`http://localhost:8000/add-note`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // pass the token in the header
         },
         body: JSON.stringify(noteData), // send the note data to the backend
       });
@@ -82,13 +59,11 @@ const Create = ({ fetchGuestNotes, fetchNotes, data, type, onClose }) => {
   // function to edit note
   const editNote = async () => {
     try {
-      const accessToken = await getAccessTokenSilently();
       const noteData = {
         title,
         content,
         tags,
         isPinned: false, // Default to false
-        userId: user.sub, // Fetch user ID from Auth0 user object
       };
       const response = await fetch(
         `http://localhost:8000/edit-note/${data._id}`,
@@ -97,7 +72,6 @@ const Create = ({ fetchGuestNotes, fetchNotes, data, type, onClose }) => {
           method: "PUT", // Use PUT or PATCH to update the note
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`, // Pass the token in the header
           },
           body: JSON.stringify(noteData), // Send the updated note data to the backend
         }
@@ -118,20 +92,6 @@ const Create = ({ fetchGuestNotes, fetchNotes, data, type, onClose }) => {
     }
   };
 
-  // edit notes for guest users
-
-  const editNoteInSessionStorage = () => {
-    const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
-    const updateNotes = guestNotes.map((note) => {
-      if (note.id === data.id) {
-        return { ...title, content, tags };
-      } else {
-        return note;
-      }
-    });
-    sessionStorage.setItem("guestNotes", JSON.stringify(updateNotes));
-  };
-
   const handleAddNote = () => {
     if (!title) {
       setError("Please enter the title !");
@@ -143,22 +103,11 @@ const Create = ({ fetchGuestNotes, fetchNotes, data, type, onClose }) => {
     }
 
     setError("");
-    if (isAuthenticated) {
-      if (type === "edit") {
-        editNote();
-      } else {
-        addNewNote();
-      }
+
+    if (type === "edit") {
+      editNote();
     } else {
-      if (type === "edit") {
-        editNoteInSessionStorage();
-        onClose();
-        fetchGuestNotes();
-        toast.success("Note updated!");
-      } else {
-        addNoteToLocalStorage();
-        toast.success("Note added!");
-      }
+      addNewNote();
     }
   };
   return (
