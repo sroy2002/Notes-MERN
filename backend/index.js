@@ -16,9 +16,7 @@ const port = process.env.PORT || 8000;
 app.use(express.json());
 
 app.use(
-  cors({
-    origin:"*",
-  })
+  cors({origin: "https://notes-mern-frontend.onrender.com"})
 );
 
 app.get("/", (req, res) => {
