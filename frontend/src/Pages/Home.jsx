@@ -19,7 +19,7 @@ const Home = () => {
   const [btnTrig, setBtnTrig] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchError, setSearchError] = useState(false);
-
+  const url = "https://notes-mern-backend-1xob.onrender.com";
   const [openModal, setOpenModal] = useState({
     isShown: false,
     type: "add",
@@ -118,10 +118,7 @@ const Home = () => {
     }
   };
 
-  // const fetchGuestNotes = () => {
-  //   const guestNotes = JSON.parse(sessionStorage.getItem("guestNotes")) || [];
-  //   setNotes(guestNotes);
-  // };
+
 
 const fetchUserNotes = async () => {
     try {
@@ -146,7 +143,7 @@ const fetchUserNotes = async () => {
   const deleteNote = async (noteId) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/delete-note/${noteId}`,
+        `${url}/delete-note/${noteId}`,
         {
           method: "DELETE",
         }

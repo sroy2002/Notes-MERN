@@ -11,7 +11,7 @@ const Create = ({ fetchNotes, data, type, onClose }) => {
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
-
+  const url = "https://notes-mern-backend-1xob.onrender.com"
   // function to add new note
   const addNewNote = async () => {
     try {
@@ -23,7 +23,7 @@ const Create = ({ fetchNotes, data, type, onClose }) => {
         isPinned: false, // default to false
       };
 
-      const response = await fetch(`http://localhost:8000/add-note`, {
+      const response = await fetch(`${url}/add-note`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Create = ({ fetchNotes, data, type, onClose }) => {
         isPinned: false, // Default to false
       };
       const response = await fetch(
-        `http://localhost:8000/edit-note/${data._id}`,
+        `${url}/edit-note/${data._id}`,
         {
           // Pass the note ID in the URL
           method: "PUT", // Use PUT or PATCH to update the note

@@ -20,7 +20,7 @@ const Notecard = ({
   // const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } =
   //   useAuth0(); // Auth0 hook
   const [pinned, setIsPinned] = useState(isPinned);
-
+  const url = "https://notes-mern-backend-1xob.onrender.com"
   const onPinNote = async (noteid) => {
     if (!pinned && pinnedCount >= 3) {
       toast.info("You can only pin up to 3 notes.");
@@ -28,7 +28,7 @@ const Notecard = ({
     }
     try {
       const response = await fetch(
-        `http://localhost:8000/update-pin/${noteid}/pin`,
+        `${url}/update-pin/${noteid}/pin`,
         {
           method: "PUT",
         }
