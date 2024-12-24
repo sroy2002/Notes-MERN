@@ -134,7 +134,7 @@ const fetchUserNotes = async () => {
 
   useEffect(() => {
     fetchUserNotes();
-  });
+  },[]);
 
   // function to edit notes
   const updateNote = async (updatedNote) => {
@@ -179,7 +179,6 @@ const fetchUserNotes = async () => {
       console.log(response.data.notes);
       if (response.data && response.data.notes) {
         setIsSearch(true);
-        setNotes(response.data.notes);
         return response.data.notes;
       }
       return [];
@@ -190,6 +189,7 @@ const fetchUserNotes = async () => {
   return (
     <div>
       <Navbar
+      notes={notes}
         handlePanel={handlePanel}
         setNotes={setNotes}
         onSearchNote={onSearchNote}

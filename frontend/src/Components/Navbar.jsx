@@ -7,8 +7,10 @@ import "../Styles/Navbar.scss";
 
 import { FaBars } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import NotFound from "./NotFound";
 
 const Navbar = ({
+  notes,
   handlePanel,
   setNotes,
   fetchNotes,
@@ -33,10 +35,11 @@ const Navbar = ({
       setSearchError(false);
     } else {
       const result = await onSearchNote(searchQuery);
+      console.log(result)
       if (!result || !Array.isArray(result) || result.length === 0) {
         setSearchError(true);
+        setNotes([]);
       } else {
-        console.log(result)
         setNotes(result);
         setSearchError(false);
       }
