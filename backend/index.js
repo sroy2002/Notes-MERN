@@ -5,7 +5,10 @@ const {
   Types: { ObjectId },
 } = require("mongoose");
 require("dotenv").config();
-mongoose.connect(config.connectionString);
+
+const mongo_url = "mongodb+srv://user1:user123@notes-mern.3xiwu.mongodb.net/?retryWrites=true&w=majority&appName=notes-mern"
+
+mongoose.connect(mongo_url).then(()=>console.log("Connected to MongoDB"));
 const Note = require("./models/note.model");
 
 const express = require("express");
