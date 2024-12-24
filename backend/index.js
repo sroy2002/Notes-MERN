@@ -5,15 +5,13 @@ const {
   Types: { ObjectId },
 } = require("mongoose");
 require("dotenv").config();
-
-console.log(process.env.MONGO_URL);
 mongoose.connect(config.connectionString);
 const Note = require("./models/note.model");
 
 const express = require("express");
 const cors = require("cors");
 const app = express();
-
+const port = process.env.PORT || 8000;
 
 app.use(express.json());
 
@@ -182,5 +180,5 @@ app.get("/search-notes", async (req, res) => {
   }
 });
 
-app.listen(8000);
+app.listen(port);
 module.exports = app;
